@@ -1,4 +1,4 @@
-# Template Guidelines
+# LosTemplates - CTF Challenge Templates as you go!
 
 Challenge templates for CTFs as you go! Sane defaults, simplified complexity,
 automated workflows, integrated sanity checking, and deployable everywhere.
