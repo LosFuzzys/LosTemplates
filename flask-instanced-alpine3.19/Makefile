@@ -14,7 +14,7 @@ kill: ckill skill
 export FULLNAME = CTFd challenge name
 export AUTHOR   = CTFd author
 export CATEGORY = pwn
-export DESC     = CTFd description
+export DESC     = $(shell cat challenge/description.txt | sed '{:q;N;s/\n/<br>/g;t q}')
 export FLAG     = $(shell cat challenge/flag.txt)
 export TAG      = CTFd tag
 
@@ -166,6 +166,7 @@ deploy: deploy-registry
 
 deploy-yml:
 	@echo -e "\e[1;34m[+] Generating CTFd challenge yml\e[0m"
+	@printf %s "${DESC}"
 	envsubst < ${MKPATH}/deployment/ctfd-entry.yml.template | \
 		tee ${MKPATH}/deployment/ctfd-${NAME}.yml >/dev/null
 

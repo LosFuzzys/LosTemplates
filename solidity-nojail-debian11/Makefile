@@ -14,7 +14,7 @@ kill: ckill skill
 export FULLNAME = CTFd challenge name
 export AUTHOR   = CTFd author
 export CATEGORY = smartcontract
-export DESC     = CTFd description
+export DESC     = $(shell cat challenge/description.txt | sed '{:q;N;s/\n/<br>/g;t q}')
 export FLAG     = $(shell cat challenge/flag.txt)
 export TAG      = CTFd tag
 
