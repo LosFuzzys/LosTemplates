@@ -7,7 +7,7 @@ Just copy any folder you'd like to your CTF repository to start with.
 
 ## Dependencies
 
-### Deployment
+### Challenge Author
 
 Install `docker`, `bash`, `make`, GNU `envsubst`, GNU `tar`, GNU `coreutils` and `parallel`.
 
@@ -29,7 +29,7 @@ sudo dnf install podman podman-docker
 
 All templates have been tested on Fedora 41 and default Ubuntu 24.04 with podman and docker.
 
-### Players via dist `.tar.gz`
+### Challenge Player
 
 Install `docker`, `tar` and a linux shell.
 
