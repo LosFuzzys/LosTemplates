@@ -12,7 +12,7 @@ kill: ckill skill
 ######################
 
 export FULLNAME = CTFd challenge name
-export AUTHOR   = CTFd author
+export AUTHOR   = LosFuzzys
 export CATEGORY = pwn
 export DESC     = CTFd description
 export FLAG     = $(shell cat challenge/flag.txt)
