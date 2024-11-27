@@ -2,7 +2,7 @@ name: "${FULLNAME}"
 author: "${AUTHOR}"
 category: "${CATEGORY}"
 
-description: ${DESC}<br><br>Autor: ${AUTHOR}
+description: ${DESC}<br><br>Author: ${AUTHOR}
 
 type: "dynamic"
 value: 500
