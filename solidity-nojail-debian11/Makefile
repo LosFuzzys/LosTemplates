@@ -50,7 +50,7 @@ export NAME=$(shell echo ${UNCLEAN_NAME} | tr "[:upper:]" "[:lower:]")
 CACHEBUST=$(shell date +%s)
 
 # Docker Run Args
-export RARGS ?= -t -i \
+export RARGS ?= -it \
 	-p ${PORT}:${PORT} \
 	-p ${HTTP_PORT}:${HTTP_PORT} \
 	-e PORT=${PORT} \
@@ -115,8 +115,7 @@ distrun:
 
 # Docker Run Args
 SRARGS=-e HOST=${HOST} -e PORT=${PORT} -e TIMEOUT=${TIMEOUT} \
-			 --hostname localhost --net=host -it \
-			 --platform linux/amd64
+			 --hostname localhost --net=host --platform linux/amd64
 # Docker Build Args
 SBARGS=--platform linux/amd64
 
@@ -130,7 +129,7 @@ srun:
 	@echo -e "\e[1;34m[+] Running Solvescript Container against" \
 		"${HOST}:${PORT}\e[0m"
 	docker run --rm ${SRARGS} -e TICKET=${SINGLE_TICKETS} -e VERBOSE="--verbose"\
-		--name ${NAME}-solvescript-oneshot ${REGISTRY}/${NAME}-solvescript
+		--name ${NAME}-solvescript -it ${REGISTRY}/${NAME}-solvescript
 
 TIMES=10
 TICKETS:= $(shell shuf -n ${TIMES} solution/tickets.txt | tr "\n" " ")
@@ -138,7 +137,7 @@ srun-sequential:
 	@echo -e "\e[1;34m[+] Running Sequential Container against" \
 		"${HOST}:${PORT}\e[0m"
 	parallel --jobs 1 docker run --rm \
-		--hostname localhost --net=host -it --platform linux/amd64 \
+		--hostname localhost --net=host --platform linux/amd64 \
 		${REGISTRY}/${NAME}-solvescript \
 		/usr/bin/timeout -k 5 ${TIMEOUT} python solve_challenge.py \
 			--host ${HOST} --port ${PORT} --ticket $1 \
@@ -149,7 +148,7 @@ srun-parallel:
 	@echo -e "\e[1;34m[+] Running Parallel Container against ${HOST}:${PORT}\e[0m"
 	cd solution/ ; \
 	parallel --jobs ${JOBS} docker run --rm \
-		--hostname localhost --net=host -it --platform linux/amd64 \
+		--hostname localhost --net=host --platform linux/amd64 \
 		${REGISTRY}/${NAME}-solvescript \
 		/usr/bin/timeout -k 5 ${TIMEOUT} python solve_challenge.py \
 			--host ${HOST} --port ${PORT} --ticket $1 \
