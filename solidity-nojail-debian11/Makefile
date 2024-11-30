@@ -1,4 +1,4 @@
-.PHONY: all run build solve kill dist distrun clean deploy
+.PHONY: all run build solve kill dist distrun clean deploy version
 
 # Targets
 all: build run
@@ -42,6 +42,12 @@ export PUBLIC_IP      = ${HOST}
 MKPATH:=$(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
 UNCLEAN_NAME=$(notdir ${MKPATH})
 export NAME=$(shell echo ${UNCLEAN_NAME} | tr "[:upper:]" "[:lower:]")
+
+# DO NOT TOUCH
+# Major: Big features & breakage of interfaces                  (in sync)
+# Minor: Small functionality changes w/ backward compatibility  (in sync)
+# Patch: Small fixes specific to this template                  (not in sync)
+export MVERSION = 1.0.0
 
 ########################
 # Challenge Dockerfile #
@@ -204,5 +210,8 @@ clean:
 	${RM} ${NAME}.tar.gz dist/challenge dist/deploy.sh dist/sha256sum \
 		solution/challenge ctfd-${NAME}.yml
 	make -C challenge clean
+
+version:
+	@echo -e "\e[1;34m[+] Template version ${MVERSION}\e[0m"
 
 # vim:tabstop=2 softtabstop=2 shiftwidth=2 noexpandtab colorcolumn=81
