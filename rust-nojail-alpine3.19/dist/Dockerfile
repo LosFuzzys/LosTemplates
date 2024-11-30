@@ -26,7 +26,7 @@
 FROM docker.io/library/alpine@sha256:c5b1261d6d3e43071626931fc004f70149baeba2c8ec672bd4f27761f8e1ad6b
 
 # Install apt dependencies if needed
-RUN apk update && apk add --no-cache socat libgcc coreutils && rm -rf /var/cache/apk/*
+RUN apk update && apk add --no-cache socat libgcc coreutils libc6-compat && rm -rf /var/cache/apk/*
 
 # Copy challenge required files
 RUN mkdir -p /app

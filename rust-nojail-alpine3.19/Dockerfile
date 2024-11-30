@@ -6,7 +6,7 @@
 FROM docker.io/library/alpine@sha256:c5b1261d6d3e43071626931fc004f70149baeba2c8ec672bd4f27761f8e1ad6b AS builder
 
 # Install apk dependencies if needed
-RUN apk update && apk add --no-cache cargo make && rm -rf /var/cache/apk/*
+RUN apk update && apk add --no-cache cargo make libc6-compat && rm -rf /var/cache/apk/*
 
 COPY challenge/ /tmp/build/
 RUN make -C /tmp/build/ challenge
