@@ -175,7 +175,7 @@ deploy-quadlet:
 		tee ~/.config/containers/systemd/chall-${NAME}.container >/dev/null
 	systemctl --user daemon-reload
 	@echo -e "\e[1;34m[+] Start the systemd service:\e[0m"
-	systemctl --user status chall-${NAME} || true
+	@echo systemctl --user start chall-${NAME}
 	@echo -e "\e[1;34m[+] Remember to enable (once) lingering for the user\e[0m"
 	@echo    "    loginctl enable-linger $$USER"
 
