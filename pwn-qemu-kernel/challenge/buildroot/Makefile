@@ -15,6 +15,6 @@ endif
 
 	cp config ${BUILDROOT}/.config
 	make -C ${BUILDROOT} -j$(shell nproc)
-	cp ${BUILDROOT}/output/rootfs.ext2 .
+	cp ${BUILDROOT}/output/images/rootfs.ext2 .
 	qemu-img convert -f raw -O qcow2 rootfs.ext2 rootfs.qcow2
 	rm rootfs.ext2
