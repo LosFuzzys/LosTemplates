@@ -42,7 +42,7 @@ export NAME=$(shell echo ${UNCLEAN_NAME} | tr "[:upper:]" "[:lower:]")
 CACHEBUST=$(shell date +%s)
 
 # Docker Run Args
-export RARGS ?= -p ${HOST}:${PORT}:80 -t -i -e HOST=${HOST} -e PORT=${PORT} \
+export RARGS ?= -p ${HOST}:${PORT}:80 -it -e HOST=${HOST} -e PORT=${PORT} \
 	--user 0:0 --security-opt=no-new-privileges:true \
 	--platform linux/amd64
 # Docker Build Args
@@ -103,7 +103,7 @@ distrun:
 
 # Docker Run Args
 SRARGS=-e HOST=${HOST} -e PORT=${PORT} -e TIMEOUT=${TIMEOUT} \
-			 --hostname localhost --net=host -it \
+			 --hostname localhost --net=host \
 			 -v ${MKPATH}/challenge/flag.txt:/app/flag.txt:z,ro \
 			 -v ${MKPATH}/challenge/flag.txt:/flag.txt:z,ro \
 			 -v ${MKPATH}/dist/flag.txt:/app/flag-fake.txt:z,ro \
@@ -121,8 +121,8 @@ srun:
 	@echo -e "\e[1;34m[+] Running Solvescript Container against" \
 		"${HOST}:${PORT}\e[0m"
 	cd solution/ ; \
-	docker run --rm ${SRARGS} \
-		--name ${NAME}-solvescript-oneshot ${REGISTRY}/${NAME}-solvescript
+	docker run --rm ${SRARGS} -it \
+		--name ${NAME}-solvescript ${REGISTRY}/${NAME}-solvescript
 
 TIMES=10
 srun-sequential:

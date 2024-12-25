@@ -87,7 +87,7 @@ distrun:
 
 # Docker Run Args
 SRARGS=-e HOST=${HOST} -e PORT=${PORT} -e TIMEOUT=${TIMEOUT} \
-			 --hostname localhost --net=host -it \
+			 --hostname localhost --net=host \
 			 -v ${MKPATH}/challenge/flag.txt:/app/flag.txt:z,ro \
 			 -v ${MKPATH}/challenge/flag.txt:/flag.txt:z,ro \
 			 --platform linux/amd64
@@ -105,8 +105,8 @@ srun:
 	@echo -e "\e[1;34m[+] Running Solvescript Container against" \
 		"${HOST}:${PORT}\e[0m"
 	cd solution/ ; \
-	docker run --rm ${SRARGS} \
-		--name ${NAME}-solvescript-oneshot ${REGISTRY}/${NAME}-solvescript
+	docker run --rm ${SRARGS} -it \
+		--name ${NAME}-solvescript ${REGISTRY}/${NAME}-solvescript
 
 TIMES=10
 srun-sequential:
