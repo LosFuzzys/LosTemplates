@@ -1,4 +1,3 @@
-challenge
 *.tar.gz
 sha256sum
 deploy.sh
