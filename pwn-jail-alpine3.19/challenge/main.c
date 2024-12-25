@@ -8,6 +8,11 @@
 #include <time.h>
 
 int main() {
+
+  setvbuf(stdout, NULL, _IONBF, 0);
+  setvbuf(stdin,  NULL, _IONBF, 0);
+  setvbuf(stderr, NULL, _IONBF, 0);
+
   srand(time(NULL));
   printf("Hello world, visitor number %d\n", rand());
 
