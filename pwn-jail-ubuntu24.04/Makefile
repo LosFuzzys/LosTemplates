@@ -184,7 +184,7 @@ deploy-quadlet:
 # Deployment for docker-compose
 deploy-docker:
 	@echo -e "\e[1;34m[+] Generating docker-compose deployment\e[0m"
-	composerize \
+	docker run ghcr.io/losfuzzys/composerize:latest \
 		docker run --rm --name ${NAME} ${RARGS} ${REGISTRY}/${NAME} \
 		> ${MKPATH}/deployment/docker-compose.yml
 	sed -i '1 s/^.*$$/name: ctf/' ${MKPATH}/deployment/docker-compose.yml
