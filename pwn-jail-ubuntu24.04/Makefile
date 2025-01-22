@@ -163,13 +163,16 @@ deploy-yml:
 deploy-quadlet:
 	@echo -e "\e[1;34m[+] Generating podman-quadlet deployment\e[0m"
 	@mkdir -p ~/.config/containers/systemd/
-	@echo -e "[Unit]\nDescription=Challenge ${NAME}\n" > \
+	echo -e "[Unit]\nDescription=Challenge ${NAME}\n" > \
 		~/.config/containers/systemd/chall-${NAME}.container
 	docker run ghcr.io/containers/podlet \
 		podman run --rm --name ${NAME} ${RARGS} ${REGISTRY}/${NAME} \
 		>> ~/.config/containers/systemd/chall-${NAME}.container
-	@echo -e "\n[Service]\nRestart=always\n\n[Install]\nWantedBy=default.target" \
+	echo -e "\n[Service]\nRestart=always\n\n[Install]\nWantedBy=default.target" \
 		>> ~/.config/containers/systemd/chall-${NAME}.container
+	sed -i 's/--tty//' ~/.config/containers/systemd/chall-${NAME}.container
+	sed -i 's/--interactive//' \
+		~/.config/containers/systemd/chall-${NAME}.container
 	@systemctl --user daemon-reload
 	@echo -e "\e[1;34m[+] Genereated podman-quadlet deployment:\e[0m"
 	@cat ~/.config/containers/systemd/chall-${NAME}.container
@@ -189,6 +192,8 @@ deploy-docker:
 		> ${MKPATH}/deployment/docker-compose.yml
 	sed -i '1 s/^.*$$/name: ctf/' ${MKPATH}/deployment/docker-compose.yml
 	@echo "    restart: always" >> ${MKPATH}/deployment/docker-compose.yml
+	sed -i '/tty: true/d' ${MKPATH}/deployment/docker-compose.yml
+	sed -i '/stdin_open: true/d' ${MKPATH}/deployment/docker-compose.yml
 	@echo -e "\e[1;34m[+] Generated docker-compose.yml deployment:\e[0m"
 	@cat ${MKPATH}/deployment/docker-compose.yml
 	@echo -e "\e[1;34m[+] Start the container:\e[0m"
