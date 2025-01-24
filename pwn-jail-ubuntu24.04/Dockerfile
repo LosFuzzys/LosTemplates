@@ -63,5 +63,9 @@ CMD nsjail
     -R /dev/random \
     -B /dev/null \
     -R /dev/zero 
-    --cwd /app/ -u 1337:1337:1 -g 1337:1337:1 -u 65534:65534:1 -g 65534:65534:1 
+        --cwd /app/ \
+    -u 1337:1337:1 \
+    -g 1337:1337:1 \
+    -u 65534:65534:1 \
+    -g 65534:65534:1 \ 
     -- /app/entrypoint.sh

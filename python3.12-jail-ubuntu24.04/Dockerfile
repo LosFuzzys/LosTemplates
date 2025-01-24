@@ -40,11 +40,11 @@ COPY challenge/entrypoint.sh /jail/app/entrypoint.sh
 # pre-created/copied files in /DESTPATH you should manually copy them in entrypoint.sh
 # Note: /DESTPATH should not contain /jail as a prefix
 CMD nsjail 
-    --mode l 
-    --disable_proc 
-    --time_limit ${TIMEOUT} 
-    --bindhost 0.0.0.0 
-    --port 1337 
+    --mode l \
+    --disable_proc \
+    --time_limit ${TIMEOUT} \
+    --bindhost 0.0.0.0 \
+    --port 1337 \
     --bindmount_ro /jail:/ \
     -m none:/dev:tmpfs:mode=555,size=1,uid=65534,gid=65534 \
     -R /dev/urandom \
