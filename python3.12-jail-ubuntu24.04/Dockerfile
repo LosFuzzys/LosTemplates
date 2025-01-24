@@ -39,7 +39,7 @@ COPY challenge/entrypoint.sh /jail/app/entrypoint.sh
 # remember that /DESTPATH cannot contain any files coming from /jail (as its a mount). If you want 
 # pre-created/copied files in /DESTPATH you should manually copy them in entrypoint.sh
 # Note: /DESTPATH should not contain /jail as a prefix
-CMD nsjail 
+CMD nsjail \
     --mode l \
     --disable_proc \
     --time_limit ${TIMEOUT} \
@@ -50,10 +50,10 @@ CMD nsjail
     -R /dev/urandom \
     -R /dev/random \
     -B /dev/null \
-    -R /dev/zero 
+    -R /dev/zero \
     --cwd /app/ \
     -u 1337:1337:1 \
     -g 1337:1337:1 \
     -u 65534:65534:1 \
-    -g 65534:65534:1 
+    -g 65534:65534:1 \
     -- /app/entrypoint.sh
