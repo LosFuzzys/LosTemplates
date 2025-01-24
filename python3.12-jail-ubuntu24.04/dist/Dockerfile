@@ -35,7 +35,7 @@ RUN chmod +x /jail/app/challenge
 COPY flag.txt /jail/flag.txt
 COPY entrypoint.sh /jail/app/entrypoint.sh
 
-CMD nsjail 
+CMD nsjail \
     --mode l \
     --disable_proc \
     --time_limit ${TIMEOUT} \
