@@ -35,4 +35,21 @@ RUN chmod +x /jail/app/challenge
 COPY flag.txt /jail/flag.txt
 COPY entrypoint.sh /jail/app/entrypoint.sh
 
-CMD nsjail --mode l --disable_proc --time_limit ${TIMEOUT} --bindhost 0.0.0.0 --port 1337 --bindmount_ro /jail:/ -m none:/dev:tmpfs:mode=555,size=1,uid=65534,gid=65534 -R /dev/urandom -R /dev/random -B /dev/null -R /dev/zero --cwd /app/ -u 1337:1337:1 -g 1337:1337:1 -u 65534:65534:1 -g 65534:65534:1 -- /app/entrypoint.sh
+CMD nsjail 
+    --mode l 
+    --disable_proc 
+    --time_limit ${TIMEOUT} 
+    --bindhost 0.0.0.0 
+    --port 1337 
+    --bindmount_ro /jail:/ \
+    -m none:/dev:tmpfs:mode=555,size=1,uid=65534,gid=65534 \
+    -R /dev/urandom \
+    -R /dev/random \
+    -B /dev/null \
+    -R /dev/zero 
+    --cwd /app/ \
+    -u 1337:1337:1 \
+    -g 1337:1337:1 \
+    -u 65534:65534:1 \
+    -g 65534:65534:1 
+    -- /app/entrypoint.sh
