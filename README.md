@@ -5,6 +5,33 @@ automated workflows, integrated sanity checking, and deployable everywhere.
 
 Just copy any folder you'd like to your CTF repository to start with.
 
+## Versions
+
+The following table lists the template and the latest version.
+
+| Name                           | Version |
+| :----------------------------- | :-----: |
+| flask-instanced-alpine3.19     | 1.0.0   |
+| flask-nojail-alpine3.19        | 1.0.0   |
+| offline                        | 1.0.0   |
+| php-instanced-ubuntu24.04      | 1.0.0   |
+| php-nojail-ubuntu24.04         | 1.0.0   |
+| phpxss-nojail-ubuntu24.04      | 1.0.0   |
+| pwn-jail-alpine3.19            | 1.0.0   |
+| pwn-jail-ubuntu24.04           | 1.0.0   |
+| pwn-nojail-alpine3.19          | 1.0.0   |
+| pwn-nojail-ubuntu24.04         | 1.0.0   |
+| pwn-qemu-kernel                | 1.0.0   |
+| python3.11-jail-alpine3.19     | 1.0.0   |
+| python3.11-nojail-alpine3.19   | 1.0.0   |
+| python3.12-jail-ubuntu24.04    | 1.0.0   |
+| python3.12-nojail-ubuntu24.04  | 1.0.0   |
+| rust-nojail-alpine3.19         | 1.0.0   |
+| rust-nojail-ubuntu24.04        | 1.0.0   |
+| sagemath-nojail-ubuntu22.04    | 1.0.0   |
+| solidity-nojail-debian11       | 1.0.0   |
+
+
 ## Dependencies
 
 ### Challenge Author
