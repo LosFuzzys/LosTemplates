@@ -48,6 +48,7 @@ export NAME=$(shell echo ${UNCLEAN_NAME} | tr "[:upper:]" "[:lower:]")
 # Minor: Small functionality changes w/ backward compatibility  (in sync)
 # Patch: Small fixes specific to this template                  (not in sync)
 export _VERSION = 1.0.0
+export _TEMPLATE = solidity-nojail-debian11
 
 ########################
 # Challenge Dockerfile #
@@ -211,6 +212,6 @@ clean:
 	make -C challenge clean
 
 version:
-	@echo -e "\e[1;34m[+] Template version ${_VERSION}\e[0m"
+	@echo -e "\e[1;34m[+] Template ${_TEMPLATE} version ${_VERSION}\e[0m"
 
 # vim:tabstop=2 softtabstop=2 shiftwidth=2 noexpandtab colorcolumn=81
