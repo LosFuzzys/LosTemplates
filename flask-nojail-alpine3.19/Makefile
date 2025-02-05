@@ -158,26 +158,48 @@ deploy-yml:
 	envsubst < ${MKPATH}/deployment/ctfd-entry.yml.template | \
 		tee ${MKPATH}/deployment/ctfd-${NAME}.yml >/dev/null
 
-# Deployments is prepared for quadlets (containers + systemd services)
-# https://www.redhat.com/sysadmin/quadlet-podman
-# - Assuming running user is the one that is operating this Makefile
-# - Remember to enable lingering for the user: loginctl enable-linger $USER
-# - Configure this user with the minimum privileges (not in sudoers)
-#
-# The service will automatically be enabled after reboot due to the [Install]
-# target in the quadlet/systemd service. So, reboot the machine or start it
-# once, and then it will always be running unless stopped.
+# Deployments for podman quadlets (systemd services)
 deploy-quadlet:
-	@echo -e "\e[1;34m[+] Deploying Container on 0.0.0.0:${PUBPORT}\e[0m"
-	mkdir -p ~/.config/containers/systemd/
-	envsubst < ${MKPATH}/deployment/systemd-service.container.template | \
-		tee ~/.config/containers/systemd/chall-${NAME}.container >/dev/null
-	systemctl --user daemon-reload
-	@echo -e "\e[1;34m[+] Start the systemd service:\e[0m"
+	@echo -e "\e[1;34m[+] Generating podman-quadlet deployment\e[0m"
+	@mkdir -p ~/.config/containers/systemd/
+	echo -e "[Unit]\nDescription=Challenge ${NAME}\n" > \
+		~/.config/containers/systemd/chall-${NAME}.container
+	docker run ghcr.io/containers/podlet \
+		podman run --rm --name ${NAME} ${RARGS} ${REGISTRY}/${NAME} \
+		>> ~/.config/containers/systemd/chall-${NAME}.container
+	echo -e "\n[Service]\nRestart=always\n\n[Install]\nWantedBy=default.target" \
+		>> ~/.config/containers/systemd/chall-${NAME}.container
+	sed -i 's/--tty//' ~/.config/containers/systemd/chall-${NAME}.container
+	sed -i 's/--interactive//' \
+		~/.config/containers/systemd/chall-${NAME}.container
+	@systemctl --user daemon-reload
+	@echo -e "\e[1;34m[+] Genereated podman-quadlet deployment:\e[0m"
+	@cat ~/.config/containers/systemd/chall-${NAME}.container
+	@echo -e "\e[1;34m[+] Generated systemd service:\e[0m"
 	systemctl --user status chall-${NAME} || true
+	@echo -e "\e[1;34m[+] Start the container:\e[0m"
+	@echo    "    systemctl --user start chall-${NAME}"
 	@echo -e "\e[1;34m[+] Remember to enable (once) lingering for the user\e[0m"
 	@echo    "    loginctl enable-linger $$USER"
+	@echo -e "\e[1;34m[+] Target for ${NAME} is ${HOST}:${PUBPORT}\e[0m"
 
+# Deployment for docker-compose
+deploy-docker:
+	@echo -e "\e[1;34m[+] Generating docker-compose deployment\e[0m"
+	docker run ghcr.io/losfuzzys/composerize:latest \
+		docker run --rm --name ${NAME} ${RARGS} ${REGISTRY}/${NAME} \
+		> ${MKPATH}/deployment/docker-compose.yml
+	sed -i '1 s/^.*$$/name: ctf/' ${MKPATH}/deployment/docker-compose.yml
+	@echo "    restart: always" >> ${MKPATH}/deployment/docker-compose.yml
+	sed -i '/tty: true/d' ${MKPATH}/deployment/docker-compose.yml
+	sed -i '/stdin_open: true/d' ${MKPATH}/deployment/docker-compose.yml
+	@echo -e "\e[1;34m[+] Generated docker-compose.yml deployment:\e[0m"
+	@cat ${MKPATH}/deployment/docker-compose.yml
+	@echo -e "\e[1;34m[+] Start the container:\e[0m"
+	@echo "    docker-compose up -d -f ${MKPATH}/deployment/docker-compose.yml"
+	@echo -e "\e[1;34m[+] Target for ${NAME} is ${HOST}:${PUBPORT}\e[0m"
+
+# Deployment for registry
 deploy-registry: 
 	@echo -e "\e[1;34m[+] Deploying Container/s\e[0m"
 	docker push ${REGISTRY}/${NAME}
