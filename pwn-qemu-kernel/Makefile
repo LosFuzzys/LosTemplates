@@ -14,7 +14,12 @@ kill: ckill skill
 export FULLNAME = CTFd challenge name
 export AUTHOR   = LosFuzzys
 export CATEGORY = pwn
-export DESC     = CTFd description
+define DESC
+This is a multiline challenge description!
+
+Feel free to add more lines.
+endef
+export DESC
 export FLAG     = $(shell cat challenge/flag.txt)
 export TAG      = CTFd tag
 
@@ -167,6 +172,8 @@ skill:
 ########################
 deploy: deploy-registry
 
+DESCBR=$(subst $(newline),<br />,${DESC})
+export DESCBR
 deploy-yml:
 	@echo -e "\e[1;34m[+] Generating CTFd challenge yml\e[0m"
 	envsubst < ${MKPATH}/deployment/ctfd-entry.yml.template | \
@@ -229,5 +236,12 @@ clean:
 
 version:
 	@echo -e "\e[1;34m[+] Template ${_TEMPLATE} version ${_VERSION}\e[0m"
+
+# DO NOT TOUCH
+# Temporary hotfix (hopefully) for DESCBR. Sorry for this!
+define newline
+
+
+endef
 
 # vim:tabstop=2 softtabstop=2 shiftwidth=2 noexpandtab colorcolumn=81
