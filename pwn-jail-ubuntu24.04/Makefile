@@ -1,4 +1,4 @@
-.PHONY: all run build solve kill dist distrun clean deploy version
+.PHONY: all run build solve kill dist distrun clean deploy version lint
 
 # Targets
 all: build run
@@ -222,6 +222,34 @@ deploy-registry:
 ###########
 # Generic #
 ###########
+
+lint:
+	@([ ! -f ${MKPATH}/challenge/flag.txt ] && \
+		echo "[FAIL] challenge/flag.txt missing") || \
+		echo "[OK  ] challenge/flag.txt exists"
+
+	@([ ! -f ${MKPATH}/dist/flag.txt ] && \
+		echo "[FAIL] dist/flag.txt missing") || \
+		echo "[OK  ] dist/flag.txt exists"
+
+	@((diff ${MKPATH}/dist/flag.txt ${MKPATH}/challenge/flag.txt &>/dev/null) && \
+		echo "[FAIL] dist/flag.txt and challenge/flag.txt are equivalent") || \
+		echo "[OK  ] dist/flag.txt and challenge/flag.txt are different"
+
+	@([ ! -f ${MKPATH}/${NAME}.tar.gz ] && \
+		echo "[FAIL] ${NAME}.tar.gz missing") || \
+		echo "[OK  ] ${NAME}.tar.gz exists"
+
+	git show HEAD:${MKPATH}/${NAME}.tar.gz &>/dev/null; \
+	([[ "$?" != 0 ]] && \
+		echo "[FAIL] ${NAME}.tar.gz not commited in git") || \
+		echo "[OK  ] ${NAME}.tar.gz commited in git"
+
+	#DR=$(grep "nsjail" ${MKPATH}/Dockerfile) \
+	#MR=$(grep "privileged" ${MKPATH}/Makefile) \
+	#@([ ${MR} -eq 0 ] && \
+	#	echo "[FAIL] ${NAME}.tar.gz not tracked by git") || \
+	#	echo "[OK  ] ${NAME}.tar.gz tracked by git"
 
 clean:
 	${RM} ${NAME}.tar.gz dist/challenge dist/deploy.sh dist/sha256sum \

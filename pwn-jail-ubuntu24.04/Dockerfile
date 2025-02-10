@@ -62,7 +62,7 @@ CMD nsjail \
     -R /dev/urandom \
     -R /dev/random \
     -B /dev/null \
-    -R /dev/zero 
+    -R /dev/zero \
     --cwd /app/ \
     -u 1337:1337:1 \
     -g 1337:1337:1 \
