@@ -45,7 +45,7 @@ export NAME=$(shell echo ${UNCLEAN_NAME} | tr "[:upper:]" "[:lower:]")
 # Minor: Small functionality changes w/ backward compatibility  (in sync)
 # Patch: Small fixes specific to this template                  (not in sync)
 export _VERSION = 1.0.0
-export _TEMPLATE = python3.12-nojail-ubuntu24.04
+export _TEMPLATE = bash-nojail-ubuntu24.04
 
 ########################
 # Challenge Dockerfile #

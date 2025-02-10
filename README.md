@@ -11,6 +11,8 @@ The following table lists the template and the latest version.
 
 | Name                           | Version |
 | :----------------------------- | :-----: |
+| bash-jail-ubuntu24.04          | 1.0.0   |
+| bash-nojail-ubuntu24.04        | 1.0.0   |
 | flask-instanced-alpine3.19     | 1.0.0   |
 | flask-nojail-alpine3.19        | 1.0.0   |
 | offline                        | 1.0.0   |
