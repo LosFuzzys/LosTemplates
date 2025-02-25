@@ -1,10 +1,12 @@
-.PHONY: all run build solve kill dist distrun clean deploy version
+.PHONY: all run build solve solve-sequential solve-parallel kill dist distrun clean deploy version
 
 # Targets
 all: build run
 run: crun
 build: cbuild
 solve: sbuild srun
+solve-sequential: sbuild srun-sequential
+solve-parallel: sbuild srun-parallel
 kill: ckill skill
 
 ######################
