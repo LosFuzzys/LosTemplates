@@ -223,22 +223,21 @@ deploy-registry:
 # Generic #
 ###########
 
-lint:
-	@([ ! -f ${MKPATH}/challenge/flag.txt ] && \
-		echo "[FAIL] challenge/flag.txt missing") || \
-		echo "[OK  ] challenge/flag.txt exists"
+define lint_check_file
+		@([ ! -f ${MKPATH}/${1} ] && \
+			echo "[FAIL] ${1} missing") || \
+			echo "[OK  ] ${1} exists"
+endef
 
-	@([ ! -f ${MKPATH}/dist/flag.txt ] && \
-		echo "[FAIL] dist/flag.txt missing") || \
-		echo "[OK  ] dist/flag.txt exists"
+lint:
+	@$(call lint_check_file,challenge/flag.txt)
+	@$(call lint_check_file,dist/flag.txt)
 
 	@((diff ${MKPATH}/dist/flag.txt ${MKPATH}/challenge/flag.txt &>/dev/null) && \
 		echo "[FAIL] dist/flag.txt and challenge/flag.txt are equivalent") || \
 		echo "[OK  ] dist/flag.txt and challenge/flag.txt are different"
 
-	@([ ! -f ${MKPATH}/${NAME}.tar.gz ] && \
-		echo "[FAIL] ${NAME}.tar.gz missing") || \
-		echo "[OK  ] ${NAME}.tar.gz exists"
+	@$(call lint_check_file,${NAME}.tar.gz)
 
 	git show HEAD:${MKPATH}/${NAME}.tar.gz &>/dev/null; \
 	([[ "$?" != 0 ]] && \
