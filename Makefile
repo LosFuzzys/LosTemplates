@@ -34,7 +34,7 @@ patch:
 		fi \
 	done; \
 	if [ "$$FOUND_DIFF" == "0" ]; then \
-		echo -e "\e[1;34m[+] No changed detected\e[0m"; \
+		echo -e "\e[1;34m[+] No changes detected\e[0m"; \
 		exit 0; \
 	fi; \
 	for DIR_NAME in $(wildcard */); do \
