@@ -25,8 +25,16 @@
             gnutar
             coreutils
             bash
+            podman
+            zsh
+            (writeShellScriptBin "docker" ''
+              HOME=$BASEPATH exec podman "$@"
+            '')
           ];
 
+          shellHook = ''
+            export BASEPATH="$PWD"
+          '';
           name = "Template Dependencies";
         };
       }
