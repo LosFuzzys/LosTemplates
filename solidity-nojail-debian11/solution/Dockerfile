@@ -17,7 +17,7 @@ RUN curl -L https://foundry.paradigm.xyz | bash \
     && bash -c "\
         source /root/.bashrc \
         && foundryup \
-            --version nightly-a428ba6ad8856611339a6319290aade3347d25d9 \
+            --install stable \
             --arch amd64" \
     && chmod 755 -R /root
 
