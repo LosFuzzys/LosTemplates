@@ -29,7 +29,6 @@
         patched_podman = p.podman.overrideAttrs (old: {
           name = "LosPodman";
           preBuild = ''
-            echo ${podman_policy}
             find . -type f -exec sed -i 's|/etc/containers/policy.json|${podman_policy}|' {} \;
           '';
         });
@@ -43,15 +42,10 @@
             coreutils
             bash
             patched_podman
-            zsh
             (writeShellScriptBin "docker" ''
               exec podman "$@"
             '')
           ];
-
-          shellHook = ''
-            export BASEPATH="$PWD"
-          '';
           name = "Template Dependencies";
         };
       }
