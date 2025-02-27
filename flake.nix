@@ -16,6 +16,23 @@
     utils.lib.eachDefaultSystem (
       system: let
         p = import nixpkgs {inherit system;};
+        podman_policy = p.writeText "policy.json" ''
+          {
+            "default":
+            [
+              {
+                "type": "insecureAcceptAnything"
+              }
+            ]
+          }
+        '';
+        patched_podman = p.podman.overrideAttrs (old: {
+          name = "LosPodman";
+          preBuild = ''
+            echo ${podman_policy}
+            find . -type f -exec sed -i 's|/etc/containers/policy.json|${podman_policy}|' {} \;
+          '';
+        });
       in {
         devShell = p.mkShell.override {stdenv = p.stdenv;} {
           packages = with p; [
@@ -25,10 +42,10 @@
             gnutar
             coreutils
             bash
-            podman
+            patched_podman
             zsh
             (writeShellScriptBin "docker" ''
-              HOME=$BASEPATH exec podman "$@"
+              exec podman "$@"
             '')
           ];
 
