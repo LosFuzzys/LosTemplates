@@ -149,8 +149,7 @@ TICKETS:= $(shell shuf -n ${TIMES} solution/tickets.txt | tr "\n" " ")
 srun-sequential:
 	@echo -e "\e[1;34m[+] Running Sequential Container against" \
 		"${HOST}:${PORT}\e[0m"
-	parallel --jobs 1 docker run --rm \
-		--hostname localhost --net=host --platform linux/amd64 \
+	parallel --jobs 1 docker run --rm ${SRARGS} \
 		${REGISTRY}/${NAME}-solvescript \
 		/usr/bin/timeout -k 5 ${TIMEOUT} python solve_challenge.py \
 			--host ${HOST} --port ${PORT} --ticket $1 \
@@ -160,8 +159,7 @@ JOBS=2
 srun-parallel:
 	@echo -e "\e[1;34m[+] Running Parallel Container against ${HOST}:${PORT}\e[0m"
 	cd solution/ ; \
-	parallel --jobs ${JOBS} docker run --rm \
-		--hostname localhost --net=host --platform linux/amd64 \
+	parallel --jobs ${JOBS} docker run --rm ${SRARGS} \
 		${REGISTRY}/${NAME}-solvescript \
 		/usr/bin/timeout -k 5 ${TIMEOUT} python solve_challenge.py \
 			--host ${HOST} --port ${PORT} --ticket $1 \
