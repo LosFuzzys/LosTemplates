@@ -64,4 +64,89 @@ Install `docker`, `tar` and a linux shell.
 
 ## Usage
 
+The Makefile a number of targets, the most important ones as a challenge-author are the following:
+* version
+* all
+* build
+* run
+* solve
+* kill
+* dist
+
+### version
+This targets prints the type of the makefile in use and the current version-number.
+It can be used to debug errors and is useful for us when determining if the template is up to date or if it is missing important fixes.
+```console
+$ make version 
+[+] Template offline version 1.0.0
+```
+
+### all
+This target is a wrapper for [build](#build) and [run](#run).
+It build or rebuilds the challenge-image and then starts a container.
+
+### build
+This target builds the Dockerimage of the challenge as specified by the Dockefile.
+The dockerfile being used is the one on the same level as the Makefile.
+Depending on the template, this target might not be implemented (e.g. for the *offline*-template).
+For *pwn*-challenges, build (which uses [cbuild](#cbuild)) also rebuilds pwn-binaries.
+
+Because the target wraps the `cbuild`-target, you get the information that `cbuild` is not implemented.
+```console
+$ make build
+[+] (cbuild) Not implemented in this template
+```
+> [!NOTE]
+> This target wraps [cbuild](#cbuild).
+
+### run
+This target starts a container running the challenge.
+Depending on the template, this target might not be implemented (e.g. for the *offline*-template).
+
+Because the target wraps the `crun`-target, you get the information that `crun` is not implemented.
+```console
+$ make run
+[+] (crun) Not implemented in this template
+```
+
+> [!NOTE]
+> This target wraps [crun](#crun).
+
+### solve
+
+> [!NOTE]
+> This target wraps [sbuild](#sbuild) and [srun](#srun).
+
+### kill
+
+> [!NOTE]
+> This target wraps [ckill](#ckill) and [skill](#skill).
+
+### dist
+This target creates a `<name>.tar.gz`-archive of the files in the dist-folder.
+In addition, it also creates a file containing all the checksums.
+This checksum-file can be used by the user to determine if he changed some files (mainly important for *pwn*-challenges).
+
+The file is creates such that `<name>` is the name of the folder that the makefile is in.
+
+
+### Other targets
+
+#### cbuild
+#### crun
+#### ckill
+
+#### sbuild
+#### srun
+#### srun-sequential
+#### srun-parallel
+#### skill
+
+#### deploy
+#### deploy-yml
+#### deploy-quadlet
+#### deploy-registry
+
+
+
 TODO
