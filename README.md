@@ -86,7 +86,7 @@ This target is a wrapper for [build](#build) and [run](#run).
 It build or rebuilds the challenge-image and then starts a container.
 
 ### build
-This target builds the Dockerimage of the challenge as specified by the Dockefile.
+This target builds the image of the challenge as specified by the Dockefile.
 The dockerfile being used is the one on the same level as the Makefile.
 Depending on the template, this target might not be implemented (e.g. for the *offline*-template).
 For *pwn*-challenges, build (which uses [cbuild](#cbuild)) also rebuilds pwn-binaries.
@@ -139,7 +139,7 @@ The file is creates such that `<name>` is the name of the folder that the Makefi
 ### Other targets
 
 #### cbuild
-This target builds the Dockerimage in `Dockerimage` and tags it as `localhost/<name>` where `<name>` is the name of the folder that the Makefile is in.
+This target builds the image as specified by the `Dockerfile` and tags it as `localhost/<name>` where `<name>` is the name of the folder that the Makefile is in.
 
 Depending on the template, this might be done in multiple stages.
 For example, in the `pwn-jail-ubuntu24.04`-template the following steps are done:
@@ -156,7 +156,7 @@ The default for the host is `127.0.0.1` and `1337` for the port.
 This target **stops** the challenge-container previously started using [crun](#crun).
 
 #### sbuild
-This target builds the Dockerimage in `solution/Dockerimage` and tags it as `localhost/<name>-solvescript` where `<name>` is the name of the folder that the Makefile is in.
+This target builds the image in `solution/Dockerfile` and tags it as `localhost/<name>-solvescript` where `<name>` is the name of the folder that the Makefile is in.
 
 #### srun
 This target uses the image built in [sbuild](#sbuild) as image for a solve-container.
