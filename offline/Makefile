@@ -80,10 +80,11 @@ HSH := $(shell md5sum dist/sha256sum 2>/dev/null | cut -d' ' -f1)
 # If tar complains about --transform, ensure you have GNU tar
 dist: build
 	@echo -e "\e[1;34m[+] Generating Distributed ${NAME}.tar.gz\e[0m"
-	cd dist && find -type f,l -exec sha256sum '{}' \; | sed -e '/sha256sum/d' -e \
-	'/deploy.sh.template/d' -e '/.gitignore/d' | tee sha256sum
+	cd dist && find -L -type f,l -exec sha256sum '{}' \; | sed -e '/sha256sum/d' \
+		-e '/deploy.sh.template/d' -e '/deploy.bat.template/d' -e '/.gitignore/d' \
+		| tee sha256sum
 	tar -h --exclude 'deploy.sh.template' --exclude '.gitignore' \
-		--transform s@^dist@${NAME}@ -czvf \
+		--exclude 'deploy.bat.template' --transform s@^dist@${NAME}@ -czvf \
 		${NAME}.tar.gz dist/
 	@echo -e "\e[1;34m[+] Generated Distributed ${NAME}.tar.gz\e[0m"
 	@echo -n "    md5sum(dist/sha256sum): (old) ${HSH} -> (new) "
