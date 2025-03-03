@@ -1,13 +1,15 @@
 # LosTemplates - CTF Challenge Templates
 
 Challenge templates for CTFs as you go! Sane defaults, simplified complexity,
-automated workflows, integrated sanity checking, and deployable everywhere.
+minimal dependencies, easily hackable and deployable everywhere.
 
-Just copy any folder you'd like to your CTF repository to start with.
+Add this repository as a submodule to your CTF repository or manually download
+and copy the folders.
 
 ## Versions
 
-The following table lists the template and the latest version.
+Latest version of every template. Check the template version of your challenge
+with `make version`.
 
 | Name                           | Version |
 | :----------------------------- | :-----: |
@@ -36,9 +38,10 @@ The following table lists the template and the latest version.
 
 ## Dependencies
 
-### Challenge Author
+### Authors
 
-Install `docker`, `bash`, `make`, GNU `envsubst`, GNU `tar`, GNU `coreutils` and `parallel`.
+Install `docker`, `bash`, `make`, GNU `envsubst`, GNU `tar`, GNU `coreutils`
+and `parallel`.
 
 **Ubuntu**:
 ```
@@ -56,152 +59,204 @@ sudo dnf install bash make gettext-envsubst tar coreutils parallel
 sudo dnf install podman podman-docker
 ```
 
-All templates have been tested on Fedora 41 and default Ubuntu 24.04 with podman and docker.
+**Nix**:
 
-### Challenge Player
+```
+nix develop
+```
 
-Install `docker`, `tar` and a linux shell.
+### Players
+
+For Linux: `docker`, `tar` and a linux shell.
+
+For Windows: `docker` with WSL2 backend.
 
 ## Usage
 
-The Makefile a number of targets, the most important ones as a challenge-author are the following:
-* version
-* all
+All the template logic is implemented in the `Makefile` at the root of every
+template folder. Every `M̀akefile` contains different targets, the most
+importants being:
+
+* all (default)
+* solve
+* dist
+* distrun
+
+Other targets might be helpful too:
+
 * build
 * run
-* solve
+* solve-sequential
+* solve-parallel
 * kill
-* dist
+* clean
+* version
 
-### version
-This targets prints the type of the makefile in use and the current version-number.
-It can be used to debug errors and is useful for us when determining if the template is up to date or if it is missing important fixes.
-```console
-$ make version 
-[+] Template offline version 1.0.0
-```
+You can customize the templates for every challenge as long as:
+
+- `make` targets behave the same way
+- `nsjail` (or similar) is not disabled in `--privileged` templates
+
+If you don't want to build the challenge from source and want to include a
+precompiled binary, you can.
 
 ### all
-This target is a wrapper for [build](#build) and [run](#run).
-It build or rebuilds the challenge-image and then starts a container.
+
+This target is a wrapper for [build](#build) and [run](#run). It build or
+rebuilds the challenge-image and then starts the challenge container.
+
+Supports selecting the `HOST` and `PORT`:
+
+```console
+$ make HOST=0.0.0.0 PORT=8080
+```
+
+The default `HOST` and `PORT` is `127.0.0.1.1337`
+
+> [!NOTE]
+> This target wraps [build](#build) and [run](#run).
 
 ### build
-This target builds the image of the challenge as specified by the Dockefile.
-The dockerfile being used is the one on the same level as the Makefile.
-Depending on the template, this target might not be implemented (e.g. for the *offline*-template).
-For *pwn*-challenges, build (which uses [cbuild](#cbuild)) also rebuilds pwn-binaries.
 
-Because the target wraps the `cbuild`-target, you get the information that `cbuild` is not implemented.
-```console
-$ make build
-[+] (cbuild) Not implemented in this template
-```
-> [!NOTE]
-> This target wraps [cbuild](#cbuild).
+This target builds the image of the challenge as specified by the Dockefile.
+The name of the image is the slugified name of the folder.
+
+The Dockerfile used is the one on the same level as the Makefile.
+
+For changing the `docker build` arguments, modify `BARGS` in the `Makefile`
 
 ### run
-This target starts a container running the challenge.
-Depending on the template, this target might not be implemented (e.g. for the *offline*-template).
 
-Because the target wraps the `crun`-target, you get the information that `crun` is not implemented.
-```console
-$ make run
-[+] (crun) Not implemented in this template
-```
+This target starts the container running the challenge.
 
-> [!NOTE]
-> This target wraps [crun](#crun).
+For changing the `docker run` arguments, modify `RARGS` in the `Makefile`
+
+Supports selecting `HOST` and `PORT` as in [all](#all)
 
 ### solve
-This target builds the Dockerimage in `/solution/Dockerfile` (using [sbuild](#sbuild)) and runs the previously build Dockerimage (using [srun](#srun)).
-Depending on the template, the usage of this target varies:
-* If the challenge does not have a remote instance (e.g. for the *offlie*-template), then `solve` can be run without running `run`.
-* If the challenges does depend on a remote instance, the author has to start it by running the `run`-target in another terminal or in the background.
 
+This target builds the Dockerfile in `/solution/Dockerfile` responsible for
+solving the challenge.
+
+For changing the `docker run` and `docker build` arguments, modify `SRARGS` and
+`SBARGS` in the `Makefile` respectively.
+
+Supports selecting the `HOST` and `PORT` to solve:
+
+```console
+$ make solve HOST=chall.glacierctf.com PORT=8080
+```
+
+The default `HOST` and `PORT` is `127.0.0.1.1337`
 
 > [!NOTE]
 > This target wraps [sbuild](#sbuild) and [srun](#srun).
 
 ### kill
-This target stops all containers providing the challenge (usually only one) and all containers running the solve-scripts (in case [srun-parallel](-srun-parallel) has been used, there might be more then one instance).
-Challenge-containers are being stopped at first, afterwards all solve-containers are being stopped.
+
+This target stops all challenge-related containers (solvers and deployments).
+
+To only kill challenge containers, see [ckill](#skill). To only kill
+solvescript containers, see [skill](#skill)
 
 > [!NOTE]
 > This target wraps [ckill](#ckill) and [skill](#skill).
 
 ### dist
-This target creates a `<name>.tar.gz`-archive of the files in the dist-folder.
-In addition, it also creates a file containing all the checksums.
-This checksum-file can be used by the user to determine if he changed some files (mainly important for *pwn*-challenges).
 
-The file is creates such that `<name>` is the name of the folder that the Makefile is in.
+This target creates a `<name>.tar.gz`-archive of the files contained in the
+`dist/` folder. We recommend to commit this file into the CTF repository when
+the challenge is finished.
 
-### Other targets
+Put everything that the players should get in `dist/`. Our recommendations is
+to symlink files from `challenge/` to `dist/` that won't need modification. For
+secret files just create a public version under `dist/`.
 
-#### cbuild
-This target builds the image as specified by the `Dockerfile` and tags it as `localhost/<name>` where `<name>` is the name of the folder that the Makefile is in.
+The `.tar.gz` automatically creates a compressed subfolder `<name>` on the fly,
+so decompressing doesn't pollute `${PWD}`
 
-Depending on the template, this might be done in multiple stages.
-For example, in the `pwn-jail-ubuntu24.04`-template the following steps are done:
-1) At first the `builder`-image is being created as `localhost/<name>-build`.
-2) This image is then being used to build the challenge, in case of this template it would be the *pwn*-binary
-3) Afterwards, the final container is being built
+In addition, it also creates a file containing all the checksums from the
+original files. When giving support for solvescripts working locally but not
+remotely, ask the player to verify the checksums with:
 
-#### crun
-This target uses the image built in [cbuild](#cbuild) as image for a container.
-The container is run such that the challenge is available on host and port as specified in the deployment-section of the makefile.
-The default for the host is `127.0.0.1` and `1337` for the port.
+```console
+sha256sum -c sha256sum
+```
 
-#### ckill
-This target **stops** the challenge-container previously started using [crun](#crun).
+### distrun
 
-#### sbuild
-This target builds the image in `solution/Dockerfile` and tags it as `localhost/<name>-solvescript` where `<name>` is the name of the folder that the Makefile is in.
+Takes an existing `<name>.tar.gz` and uses it to locally deploy the challenge
+as a player would do.
 
-#### srun
-This target uses the image built in [sbuild](#sbuild) as image for a solve-container.
-To connect to the challenge-container, it uses the host and port as specified in the deployment-section of the makefile.
+Use it in combination with `make solve` to ensure the distributed tarfile is
+deployable and solvable.
 
-#### srun-sequential
-This target behaves similar to [srun](#srun) but runs the solve-container multiple times sequentially.
-The number of executions can be changed by changing the `TIMES`-variable.
+### version
 
-#### srun-parallel
-This target behaves similar to [srun](#srun) but runs the solve-container multiple times in parallel.
-The number of executions can be changed by changing the `TIMES`-variable, the number of containers being run in parallel by changing the `JOBS`-variable.
+Prints the type of the makefile in use and the current version-number.
 
-#### skill
-This target **stops** the solve-container(s) previously started using [srun](#srun), [srun-sequential](#srun-sequential) or [srun-parallel](#srun-parallel).
+Check for the latest version in [version](#version).
 
-#### distrun
-This target places all files in the `<name>.tar.gz`-file generated by [dist](#dist) into the solutions-folder.
-This is done so that the author can check that the challenge is solvable using the files provided to the participants.
-That is mostly done after before the event to make sure that the challenge did not break during the development- & review-process.
+### solve-sequential
+
+Runs [solve](#solve) sequentially for multiple runs.
+
+Supports `TIMES` to select the ammount of runs:
+
+```console
+make solve-sequential TIMES=100
+```
+
+#### solve-parallel
+
+Runs [solve](#solve) in parallel for multiple runs.
+
+Supports `TIMES` to select the ammount of runs and `JOBS` to select the threads:
+
+```console
+make solve-sequential TIMES=100 JOBS=5
+```
 
 #### deploy
-This target is a wrapper for [deploy-registry](#deploy-registry).
+
+This target is a wrapper for other deploy targets, can be changed to make it
+the default deployment for a CTF. For default, it runs
+[deploy-registry](#deploy-registry).
 
 #### deploy-yml
-This target uses the ctfd-entry-template in `deployment/ctfd-entry.yml.template` and templates a ctfd-entry that can be imported into CTFd by using a tool like [ctfdcli](https://github.com/CTFd/ctfcli).
+
+Uses the ctfd-entry-template in `deployment/ctfd-entry.yml.template` and
+templates a ctfd-entry that can be imported into CTFd by using a tool like
+[ctfdcli](https://github.com/CTFd/ctfcli).
 
 #### deploy-quadlet
-This target uses the systemd-service.container.template in `deployment/systemd-service.container.template` in order to generate a configuration that allows this challenge being started and stopped using systemd on systems that have podman-quadlet installed.
+
+Uses `podlet` to convert the the challenge into a quadlet (podman) so the
+challenge can be deployed as a systemd service.
 
 #### deploy-docker
-This target uses `composerize` in order to create a docker-compose file from a docker-run command.
-The docker-compose file is being stored in `deployment/docker-compose.yml`.
+
+Uses `composerize` to convert the challenge into a `docker-compose.yml` file so
+the challenge can be deployed as a docker-compose container.
 
 #### deploy-registry
-This target pushes the challenge-container built by [cbuild](#cbuild) and pushes it to the registry defined in the deployment-configuration.
-Depending on the registry, the user might need to sign in, the templates does not cover this (it expects the user to be signed in and able to push to the specified registry)
+
+This target pushes the challenge container built by [build](#build) and pushes
+it to the registry defined in the `Makefile` (default: `localhost`).
+
+Can be used to push the challenges into a registry and deploy the challenges in
+Kubernetes.
+
+Expects the user to be authenticated into the specified registry.
 
 #### clean
-This target removes the following files:
+
+Can be customized to clean intermediate files from the challenge. The default
+files that cleans is:
+
 * `<name>.tar.gz`
-* dist/challenge
+* dist/challenge (depending)
 * dist/deploy.sh
 * dist/sha256sum 
 * solution/challenge
 * `ctfd-<name>.yml`
-
-Apart of `dist/challenge` and `solution/challenge` all of these files are files generated by individual make-targets.
