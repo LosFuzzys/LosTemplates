@@ -223,32 +223,31 @@ deploy-registry:
 # Generic #
 ###########
 
-define lint_check_file
-		@([ ! -f ${MKPATH}/${1} ] && \
-			echo "[FAIL] ${1} missing") || \
-			echo "[OK  ] ${1} exists"
+define lint_assert_file_exists
+	@([ ! -f ${MKPATH}/${1} ] && \
+		echo -e "\e[0;41m[FAIL]\e[0;0m ${1} missing") || \
+		echo "[OK  ] ${1} exists"
+endef
+
+define lint_assert_files_differ
+	@((diff ${MKPATH}/${1} ${MKPATH}/${2} &>/dev/null) && \
+		echo -e "\e[0;41m[FAIL]\e[0;0m ${1} and ${2} are equivalent") || \
+		echo "[OK  ] ${1} and ${2} are different"
+endef
+
+define lint_assert_file_commited
+	git show HEAD:${MKPATH}/${1} &>/dev/null; \
+	([[ "$?" != 0 ]] && \
+		echo -e "\e[0;41m[FAIL]\e[0;0m ${1} not commited in git") || \
+		echo "[OK  ] ${1} commited in git"
 endef
 
 lint:
-	@$(call lint_check_file,challenge/flag.txt)
-	@$(call lint_check_file,dist/flag.txt)
-
-	@((diff ${MKPATH}/dist/flag.txt ${MKPATH}/challenge/flag.txt &>/dev/null) && \
-		echo "[FAIL] dist/flag.txt and challenge/flag.txt are equivalent") || \
-		echo "[OK  ] dist/flag.txt and challenge/flag.txt are different"
-
-	@$(call lint_check_file,${NAME}.tar.gz)
-
-	git show HEAD:${MKPATH}/${NAME}.tar.gz &>/dev/null; \
-	([[ "$?" != 0 ]] && \
-		echo "[FAIL] ${NAME}.tar.gz not commited in git") || \
-		echo "[OK  ] ${NAME}.tar.gz commited in git"
-
-	#DR=$(grep "nsjail" ${MKPATH}/Dockerfile) \
-	#MR=$(grep "privileged" ${MKPATH}/Makefile) \
-	#@([ ${MR} -eq 0 ] && \
-	#	echo "[FAIL] ${NAME}.tar.gz not tracked by git") || \
-	#	echo "[OK  ] ${NAME}.tar.gz tracked by git"
+	@$(call lint_assert_file_exists,challenge/flag.txt)
+	@$(call lint_assert_file_exists,dist/flag.txt)
+	@$(call lint_assert_file_exists,${NAME}.tar.gz)
+	@$(call lint_assert_files_differ,dist/flag.txt,challenge/flag.txt)
+	@$(call lint_assert_file_commited,${NAME}.tar.gz)
 
 clean:
 	${RM} ${NAME}.tar.gz dist/challenge dist/deploy.sh dist/sha256sum \
