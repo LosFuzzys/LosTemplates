@@ -59,6 +59,16 @@ sudo dnf install bash make gettext-envsubst tar coreutils parallel
 sudo dnf install podman podman-docker
 ```
 
+**Arch**:
+```
+sudo pacman -S bash make gettext tar coreutils parallel
+# Install podman or docker at your choice
+sudo pacman -S docker
+# If you prefer rootless docker, install it from AUR
+# but check for the configuration in the wiki
+yay docker-rootless-extras
+```
+
 **Nix**:
 
 ```
@@ -74,7 +84,7 @@ For Windows: `docker` with WSL2 backend.
 ## Usage
 
 All the template logic is implemented in the `Makefile` at the root of every
-template folder. Every `M̀akefile` contains different targets, the most
+template folder. Every `Makefile` contains different targets, the most
 importants being:
 
 * all (default)
