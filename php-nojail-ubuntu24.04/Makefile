@@ -148,7 +148,7 @@ srun-sequential:
 	cd solution/ ; \
 	parallel --jobs 1 docker run --rm ${SRARGS} \
 		--name ${NAME}-solvescript-sequential-{} ${REGISTRY}/${NAME}-solvescript \
-		::: {1..${TIMES}}
+		::: `seq -s' ' 1 1 ${TIMES}`
 	
 JOBS=2
 srun-parallel:
@@ -156,7 +156,7 @@ srun-parallel:
 	cd solution/ ; \
 	parallel --jobs ${JOBS} docker run --rm ${SRARGS} \
 		--name ${NAME}-solvescript-parallel-{} ${REGISTRY}/${NAME}-solvescript \
-		::: {1..${TIMES}}
+		::: `seq -s' ' 1 1 ${TIMES}`
 
 skill:
 	@echo -e "\e[1;34m[+] Killing Solution Container/s\e[0m"
