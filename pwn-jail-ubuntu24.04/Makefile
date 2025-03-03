@@ -242,6 +242,7 @@ define lint_assert_file_commited
 		echo "[OK  ] ${1} commited in git"
 endef
 
+lint: SHELL=/bin/bash
 lint:
 	@$(call lint_assert_file_exists,challenge/flag.txt)
 	@$(call lint_assert_file_exists,dist/flag.txt)
