@@ -1,4 +1,4 @@
-.PHONY: get_versions
+.PHONY: versions
 
 NAME_LENGTH:=30
 VERSION_LENGTH:=7
