@@ -36,8 +36,6 @@ case "${1}" in
     kill_container
     ;;
   *)
-    check
-    build_container
-    run_container
+    check && build_container && run_container
     ;;
 esac
