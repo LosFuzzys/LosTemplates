@@ -38,7 +38,7 @@ with `make version`.
 
 ## Dependencies
 
-### Authors
+### Challenge Author
 
 Install `docker`, `bash`, `make`, GNU `envsubst`, GNU `tar`, GNU `coreutils`
 and `parallel`.
