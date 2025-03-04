@@ -1,4 +1,4 @@
-.PHONY: all run build solve kill dist distrun clean deploy version
+.PHONY: all run build solve kill dist distrun clean deploy version lint
 
 # Targets
 all: build run
@@ -232,6 +232,32 @@ deploy-registry:
 ###########
 # Generic #
 ###########
+
+define lint_assert_file_exists
+	@([ ! -f ${MKPATH}/${1} ] && \
+		echo -e "\e[0;41m[FAIL]\e[0;0m ${1} missing") || \
+		echo "[OK  ] ${1} exists"
+endef
+
+define lint_assert_files_differ
+	@((diff ${MKPATH}/${1} ${MKPATH}/${2} &>/dev/null) && \
+		echo -e "\e[0;41m[FAIL]\e[0;0m ${1} and ${2} are equivalent") || \
+		echo "[OK  ] ${1} and ${2} are different"
+endef
+
+define lint_assert_file_commited
+	git show HEAD:${MKPATH}/${1} &>/dev/null; \
+	([[ "$?" != 0 ]] && \
+		echo -e "\e[0;41m[FAIL]\e[0;0m ${1} not commited in git") || \
+		echo "[OK  ] ${1} commited in git"
+endef
+
+lint:
+	@$(call lint_assert_file_exists,challenge/flag.txt)
+	@$(call lint_assert_file_exists,dist/flag.txt)
+	@$(call lint_assert_file_exists,${NAME}.tar.gz)
+	@$(call lint_assert_files_differ,dist/flag.txt,challenge/flag.txt)
+	@$(call lint_assert_file_commited,${NAME}.tar.gz)
 
 clean:
 	${RM} ${NAME}.tar.gz dist/challenge dist/deploy.sh dist/sha256sum \
