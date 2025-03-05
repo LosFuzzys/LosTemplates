@@ -262,10 +262,8 @@ test_main:
 
 test_dist:
 	@echo -e "[+] Follow logs with \e[1;33mtail -f ${TEST_LOG}\e[0m"
-	@echo -e "[+] build dist challenge"
-	@make dist >> $(TEST_LOG) 2>&1 || $(call test_fail,distributing failed,make dist)
 	@make distrun DIST_TARGET=build >> $(TEST_LOG) 2>&1 \
-		|| $(call test_fail,building dist container failed,make distrun)
+		|| $(call test_fail,distrun failed,make distrun)
 	@echo -e "[+] run dist challenge - wait for max ${TEST_TIMEOUT_UP}s"
 	@make distrun >> $(TEST_LOG) 2>&1 &
 	@$(call test_solve_container)
