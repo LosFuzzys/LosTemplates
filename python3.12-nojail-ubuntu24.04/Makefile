@@ -239,7 +239,7 @@ define test_solve_container
 	[ "$$F" == "1" ] && echo -e "\e[1;31mTimeout reached\e[0m" && exit 1 || true 
 	echo -e "[+] make solve" || true
 	@make solve >> $(TEST_LOG) 2>&1 && echo -e "\e[1;32m[+] Flag found\e[0m" || \
-		(echo -e "\e[1;33m[+] Couldn't extract flag\e[0m" && exit 1)
+		(echo -e "\e[1;33m[+] Flag not found\e[0m" && exit 1)
 endef
 
 define test_fail
@@ -257,24 +257,24 @@ test-main:
 	@echo -e "\e[1;34m[+] Testing challenge\e[0m"
 	@echo -e "[+] Follow logs with \e[1;33mtail -f ${TEST_LOG}\e[0m"
 	@make kill > /dev/null 2>&1
-	@echo -e "[+] build challenge"
+	@echo -e "[+] make build"
 	@make build >> $(TEST_LOG) 2>&1 || $(call test_fail,make build)
-	@echo -e "[+] run challenge - wait for max ${TEST_TIMEOUT_UP}s"
+	@echo -e "[+] make run (timeout ${TEST_TIMEOUT_UP}s)"
 	@make run >> $(TEST_LOG) 2>&1 &
 	@$(call test_solve_container)
 	@make kill > /dev/null 2>&1
-	${RM} ${MKPATH}/test.log
+	@${RM} ${MKPATH}/test.log
 
 test-dist:
 	@echo -e "\e[1;34m[+] Testing distributed challenge\e[0m"
 	@echo -e "[+] Follow logs with \e[1;33mtail -f ${TEST_LOG}\e[0m"
 	@make distrun DIST_TARGET=build >> $(TEST_LOG) 2>&1 \
 		|| $(call test_fail,make distrun)
-	@echo -e "[+] make distrun (timeout: ${TEST_TIMEOUT_UP}s)"
+	@echo -e "[+] make distrun (timeout ${TEST_TIMEOUT_UP}s)"
 	@make distrun >> $(TEST_LOG) 2>&1 &
 	@$(call test_solve_container)
 	@make kill > /dev/null 2>&1
-	${RM} ${MKPATH}/test.log
+	@${RM} ${MKPATH}/test.log
 
 ###########
 # Generic #
