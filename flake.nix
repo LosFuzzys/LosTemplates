@@ -1,6 +1,6 @@
 {
-  description = "Glacier";
-  nixConfig.bash-prompt = "\[🏔️\]$ ";
+  description = "LosTemplates";
+  nixConfig.bash-prompt = "\\w $ ";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
@@ -46,7 +46,7 @@
               exec podman "$@"
             '')
           ];
-          name = "Template Dependencies";
+          name = "LosTemplates";
         };
       }
     );
