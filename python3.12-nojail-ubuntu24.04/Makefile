@@ -237,34 +237,39 @@ define test_solve_container
 		F='0' && break || sleep 1; \
 	done; \
 	[ "$$F" == "1" ] && echo -e "\e[1;31mTimeout reached\e[0m" && exit 1 || true 
-	echo -e "[+] Running solvescript" || true
+	echo -e "[+] make solve" || true
 	@make solve >> $(TEST_LOG) 2>&1 && echo -e "\e[1;32m[+] Flag found\e[0m" || \
 		(echo -e "\e[1;33m[+] Couldn't extract flag\e[0m" && exit 1)
 endef
 
 define test_fail
-	(echo -e	"\e[1;31m[+] $1.\e[0m Run \e[1;36m$2\e[0m to debug" && exit 1)
+	@echo -e	"\e[1;31m---------------- START tail log ------------------\e[0m"
+	@tail ${TEST_LOG}
+	@echo -e	"\e[1;31m------------------ END tail log ------------------\e[0m"
+	@echo -e	"\e[1;31m[+] $1 failed.\e[0m Run \e[1;36m$1\e[0m to debug" && exit 1
 endef
 
 TEST_TIMEOUT_UP=30
-TEST_LOG := ./test.log 
-test: test_main test_dist
+TEST_LOG := ${MKPATH}/test.log
+test: test-main test-dist
 
-test_main:
+test-main:
+	@echo -e "\e[1;34m[+] Testing challenge\e[0m"
 	@echo -e "[+] Follow logs with \e[1;33mtail -f ${TEST_LOG}\e[0m"
 	@make kill > /dev/null 2>&1
 	@echo -e "[+] build challenge"
-	@make build >> $(TEST_LOG) 2>&1 || $(call test_fail,building failed,make build)
+	@make build >> $(TEST_LOG) 2>&1 || $(call test_fail,make build)
 	@echo -e "[+] run challenge - wait for max ${TEST_TIMEOUT_UP}s"
 	@make run >> $(TEST_LOG) 2>&1 &
 	@$(call test_solve_container)
 	@make kill > /dev/null 2>&1
 
-test_dist:
+test-dist:
+	@echo -e "\e[1;34m[+] Testing distributed challenge\e[0m"
 	@echo -e "[+] Follow logs with \e[1;33mtail -f ${TEST_LOG}\e[0m"
 	@make distrun DIST_TARGET=build >> $(TEST_LOG) 2>&1 \
-		|| $(call test_fail,distrun failed,make distrun)
-	@echo -e "[+] run dist challenge - wait for max ${TEST_TIMEOUT_UP}s"
+		|| $(call test_fail,make distrun)
+	@echo -e "[+] make distrun (timeout: ${TEST_TIMEOUT_UP}s)"
 	@make distrun >> $(TEST_LOG) 2>&1 &
 	@$(call test_solve_container)
 	@make kill > /dev/null 2>&1
