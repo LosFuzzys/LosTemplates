@@ -243,10 +243,10 @@ define test_solve_container
 endef
 
 define test_fail
-	@echo -e	"\e[1;31m---------------- START tail log ------------------\e[0m"
-	@tail ${TEST_LOG}
-	@echo -e	"\e[1;31m------------------ END tail log ------------------\e[0m"
-	@echo -e	"\e[1;31m[+] $1 failed.\e[0m Run \e[1;36m$1\e[0m to debug" && exit 1
+	(echo -e	"\e[1;31m---------------- START tail log ------------------\e[0m"; \
+	tail ${TEST_LOG}; \
+	echo -e	"\e[1;31m------------------ END tail log ------------------\e[0m"; \
+	echo -e	"\e[1;31m[+] $1 failed.\e[0m Run \e[1;36m$1\e[0m to debug" && exit 1)
 endef
 
 TEST_TIMEOUT_UP=30
@@ -263,6 +263,7 @@ test-main:
 	@make run >> $(TEST_LOG) 2>&1 &
 	@$(call test_solve_container)
 	@make kill > /dev/null 2>&1
+	${RM} ${MKPATH}/test.log
 
 test-dist:
 	@echo -e "\e[1;34m[+] Testing distributed challenge\e[0m"
@@ -273,6 +274,7 @@ test-dist:
 	@make distrun >> $(TEST_LOG) 2>&1 &
 	@$(call test_solve_container)
 	@make kill > /dev/null 2>&1
+	${RM} ${MKPATH}/test.log
 
 ###########
 # Generic #
