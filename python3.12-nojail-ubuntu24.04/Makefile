@@ -60,7 +60,7 @@ export RARGS ?= -p ${HOST}:${PORT}:1337 -it -e HOST=${HOST} -e PORT=${PORT} \
 	-e TIMEOUT=${TIMEOUT} --user 1337:1337 --read-only \
 	--security-opt=no-new-privileges:true --platform linux/amd64
 # Docker Build Args
-export BARGS ?= --platform linux/amd64
+export BARGS ?= --platform linux/amd64 --build-arg CACHEBUST=${CACHEBUST}
 
 crun:
 	@echo -e "\e[1;34m[+] Running Challenge Container on ${HOST}:${PORT}\e[0m"
@@ -68,12 +68,10 @@ crun:
 
 cbuild:
 	@echo -e "\e[1;34m[+] Building Challenge Container\e[0m"
-	#docker build -t ${REGISTRY}/${NAME}-build --target builder \
-	#	${BARGS} --build-arg CACHEBUST=${CACHEBUST} .
+	#docker build -t ${REGISTRY}/${NAME}-build --target builder ${BARGS} .
 	#docker run  -v ${MKPATH}/dist:/dist:z ${REGISTRY}/${NAME}-build
 	#cp ${MKPATH}/challenge/challenge ${MKPATH}/solution/
-	docker build -t ${REGISTRY}/${NAME} \
-		${BARGS} --build-arg CACHEBUST=${CACHEBUST} .
+	docker build -t ${REGISTRY}/${NAME} ${BARGS} .
 
 ckill:
 	@echo -e "\e[1;34m[+] Killing Challenge Container\e[0m"

@@ -21,7 +21,7 @@ call :setESC
 :build
 	echo %ESC%[34m[+] Building Challenge Docker Container%ESC%[0m
 	REM !!! THIS DOES NOT WORK IF YOU ARE IN A SYMLINKED FOLDER !!!
-  docker build -t localhost/chall-${NAME} ${BARGS} .
+  docker build -t localhost/chall-${NAME} --platform linux/amd64 .
 
 :run
 	echo %ESC[34m[+] Running Challenge Docker Container on ${HOST}:${PORT}%ESC%[0m"
