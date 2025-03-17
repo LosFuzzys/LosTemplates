@@ -228,6 +228,8 @@ deploy-registry:
 # Generic #
 ###########
 
+SHELL := /usr/bin/env bash
+
 clean:
 	${RM} ${NAME}.tar.gz dist/challenge dist/deploy.sh dist/sha256sum \
 		solution/challenge ctfd-${NAME}.yml

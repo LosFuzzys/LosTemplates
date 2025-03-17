@@ -237,6 +237,8 @@ deploy-registry:
 # Generic #
 ###########
 
+SHELL := /usr/bin/env bash
+
 define lint_assert_file_exists
 	@([ ! -f ${MKPATH}/${1} ] && \
 		echo -e "\e[0;41m[FAIL]\e[0;0m ${1} missing") || \
