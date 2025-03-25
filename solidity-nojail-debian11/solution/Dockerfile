@@ -24,7 +24,7 @@ RUN curl -L https://foundry.paradigm.xyz | bash \
 WORKDIR /tmp/solution
 COPY foundry.toml .
 COPY solve_challenge.py .
-COPY sources sources/.
+COPY sources/ sources/
 
 CMD /usr/bin/timeout -k 5 ${TIMEOUT} python solve_challenge.py \
     --host ${HOST} --port ${PORT} --ticket ${TICKET} ${VERBOSE}

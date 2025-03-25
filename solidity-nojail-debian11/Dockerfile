@@ -55,7 +55,7 @@ RUN curl -L https://foundry.paradigm.xyz | bash \
 
 # Copy all challange files
 RUN mkdir /tmp/contracts/
-COPY challenge/*.sol /tmp/contracts/.
+COPY challenge/*.sol /tmp/contracts/
 COPY challenge/flag.txt /flag.txt
 
 # CACHEBUST is a Docker trick to invalidate the cache at a exact point

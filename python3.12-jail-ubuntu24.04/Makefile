@@ -1,4 +1,4 @@
-.PHONY: all run build solve solve-sequential solve-parallel kill dist distrun clean deploy version lint
+.PHONY: all run build solve solve-sequential solve-parallel kill dist distrun clean deploy version lint test
 
 # Targets
 all: build run
@@ -54,9 +54,10 @@ export _TEMPLATE = python3.12-jail-ubuntu24.04
 ########################
 
 CACHEBUST=$(shell date +%s)
+IT=$$([ -t 0 ] && echo "-it")
 
 # Docker Run Args
-export RARGS ?= -p ${HOST}:${PORT}:1337 -it -e HOST=${HOST} -e PORT=${PORT} \
+export RARGS ?= -p ${HOST}:${PORT}:1337 -e HOST=${HOST} -e PORT=${PORT} \
 	-e TIMEOUT=${TIMEOUT} --read-only --privileged \
 	--platform linux/amd64
 # Docker Build Args
@@ -64,7 +65,7 @@ export BARGS ?= --platform linux/amd64 --build-arg CACHEBUST=${CACHEBUST}
 
 crun:
 	@echo -e "\e[1;34m[+] Running Challenge Container on ${HOST}:${PORT}\e[0m"
-	docker run --rm --name ${NAME} ${RARGS} ${REGISTRY}/${NAME}
+	docker run --rm --name ${NAME} ${RARGS} ${IT} ${REGISTRY}/${NAME}
 
 cbuild:
 	@echo -e "\e[1;34m[+] Building Challenge Container\e[0m"
@@ -107,13 +108,14 @@ dist: build
 	@echo    "    - old != new: new  challenge sources => re-check distrun & solve"
 
 # Deploy the generate dist file for testing
+DIST_TARGET=
 distrun:
 	@echo -e "\e[1;34m[+] Deploying Distributed ${NAME}.tar.gz (${HSH})\e[0m"
 	cd $(shell mktemp -d) && \
 	cp ${MKPATH}/${NAME}.tar.gz . && \
 	tar xf ${NAME}.tar.gz && \
 	cd ${NAME} && \
-	./deploy.sh
+	./deploy.sh ${DIST_TARGET}
 
 #########################
 # Challenge Solvescript #
@@ -139,7 +141,7 @@ srun:
 	@echo -e "\e[1;34m[+] Running Solvescript Container against" \
 		"${HOST}:${PORT}\e[0m"
 	cd solution/ ; \
-	docker run --rm ${SRARGS} -it \
+	docker run --rm ${SRARGS} ${IT} \
 		--name ${NAME}-solvescript ${REGISTRY}/${NAME}-solvescript
 
 TIMES=10
@@ -223,6 +225,56 @@ deploy-docker:
 deploy-registry: 
 	@echo -e "\e[1;34m[+] Deploying Container/s\e[0m"
 	docker push ${REGISTRY}/${NAME}
+
+#############
+# Testsuite #
+#############
+
+define test_solve_container
+	@F='1'; \
+	for w in `seq -s' ' 1 1 ${TEST_TIMEOUT_UP}`; do \
+		[ "`docker ps --format 'UP' --filter "name=${NAME}"`" == "UP" ] && \
+		F='0' && break || sleep 1; \
+	done; \
+	[ "$$F" == "1" ] && echo -e "\e[1;31mTimeout reached\e[0m" && exit 1 || true 
+	echo -e "[+] make solve" || true
+	@make solve >> $(TEST_LOG) 2>&1 && echo -e "\e[1;32m[+] Flag found\e[0m" || \
+		(echo -e "\e[1;33m[+] Flag not found\e[0m" && exit 1)
+endef
+
+define test_fail
+	(echo -e	"\e[1;31m---------------- START tail log ------------------\e[0m"; \
+	tail ${TEST_LOG}; \
+	echo -e	"\e[1;31m------------------ END tail log ------------------\e[0m"; \
+	echo -e	"\e[1;31m[+] $1 failed.\e[0m Run \e[1;36m$1\e[0m to debug" && exit 1)
+endef
+
+TEST_TIMEOUT_UP=30
+TEST_LOG := ${MKPATH}/test.log
+test: test-main test-dist
+
+test-main:
+	@echo -e "\e[1;34m[+] Testing challenge\e[0m"
+	@echo -e "[+] Follow logs with \e[1;33mtail -f ${TEST_LOG}\e[0m"
+	@make kill > /dev/null 2>&1
+	@echo -e "[+] make build"
+	@make build >> $(TEST_LOG) 2>&1 || $(call test_fail,make build)
+	@echo -e "[+] make run (timeout ${TEST_TIMEOUT_UP}s)"
+	@make run >> $(TEST_LOG) 2>&1 &
+	@$(call test_solve_container)
+	@make kill > /dev/null 2>&1
+	@${RM} ${MKPATH}/test.log
+
+test-dist:
+	@echo -e "\e[1;34m[+] Testing distributed challenge\e[0m"
+	@echo -e "[+] Follow logs with \e[1;33mtail -f ${TEST_LOG}\e[0m"
+	@make distrun DIST_TARGET=build >> $(TEST_LOG) 2>&1 \
+		|| $(call test_fail,make distrun)
+	@echo -e "[+] make distrun (timeout ${TEST_TIMEOUT_UP}s)"
+	@make distrun >> $(TEST_LOG) 2>&1 &
+	@$(call test_solve_container)
+	@make kill > /dev/null 2>&1
+	@${RM} ${MKPATH}/test.log
 
 ###########
 # Generic #
