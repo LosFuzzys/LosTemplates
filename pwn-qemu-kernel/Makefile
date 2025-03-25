@@ -256,6 +256,7 @@ define test_fail
 endef
 
 TEST_TIMEOUT_UP=30
+TEST_BOOT_DELAY=0
 TEST_LOG := ${MKPATH}/test.log
 test: test-main test-dist
 
@@ -267,6 +268,9 @@ test-main:
 	@make build >> $(TEST_LOG) 2>&1 || $(call test_fail,make build)
 	@echo -e "[+] make run (timeout ${TEST_TIMEOUT_UP}s)"
 	@make run >> $(TEST_LOG) 2>&1 &
+	@[ "${TEST_BOOT_DELAY}" -eq "0" ] || \
+		(echo -e "[+] wait ${TEST_BOOT_DELAY}s for the challenge to boot" && \
+		sleep ${TEST_BOOT_DELAY})
 	@$(call test_solve_container)
 	@make kill > /dev/null 2>&1
 	@${RM} ${MKPATH}/test.log
@@ -278,6 +282,9 @@ test-dist:
 		|| $(call test_fail,make distrun)
 	@echo -e "[+] make distrun (timeout ${TEST_TIMEOUT_UP}s)"
 	@make distrun >> $(TEST_LOG) 2>&1 &
+	@[ "${TEST_BOOT_DELAY}" -eq "0" ] || \
+		(echo -e "[+] wait ${TEST_BOOT_DELAY}s for the challenge to boot" && \
+		sleep ${TEST_BOOT_DELAY})
 	@$(call test_solve_container)
 	@make kill > /dev/null 2>&1
 	@${RM} ${MKPATH}/test.log
