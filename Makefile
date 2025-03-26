@@ -20,7 +20,7 @@ patch:
 	@if [ -f ${PATCH} ]; then \
 		for f in $(wildcard */) ; do \
 				if [[ -d "$$f" && -f "$$f/Makefile" ]]; then \
-					 echo -e "\e[1;34m[+] Patching $f with ${PATCH}\e[0m"; \
+					 echo -e "\e[1;34m[+] Patching $$f with ${PATCH}\e[0m"; \
 					patch -d $$f --backup-if-mismatch -p2 < ${PATCH}; \
 				fi \
 		done \

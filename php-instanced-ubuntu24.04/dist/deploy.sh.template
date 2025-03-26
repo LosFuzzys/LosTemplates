@@ -21,7 +21,7 @@ build_container() {
 
 run_container() {
   echo -e "\e[1;34m[+] Running Challenge Docker Container on ${HOST}:${PORT}\e[0m"
-  docker run --name chall-${NAME} --rm -p ${PORT}:80 -it localhost/chall-${NAME}
+  docker run --name chall-${NAME} --rm -p ${PORT}:80 localhost/chall-${NAME}
 }
 
 kill_container() {
@@ -46,7 +46,6 @@ case "${1}" in
     ;;
   *)
     check
-    build_container
-    run_container
+    build_container && run_container
     ;;
 esac
