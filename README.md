@@ -41,7 +41,7 @@ with `make version`.
 ### Challenge Author
 
 Install `docker`, `bash`, `make`, GNU `envsubst`, GNU `tar`, GNU `coreutils`
-and `parallel`.
+and `parallel`. We also support BSD `tar`, as this is shipped by default on OSX.
 
 **Ubuntu**:
 ```

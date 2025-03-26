@@ -88,6 +88,10 @@ ckill:
 HSH := $(shell md5sum dist/sha256sum 2>/dev/null | cut -d' ' -f1)
 
 # If tar complains about --transform, ensure you have GNU tar
+TAR_GNU_RENAME := $$(tar --version | grep -i gnu > /dev/null 2>&1 && \
+									echo "--transform s@^dist@${NAME}@")
+TAR_BSD_RENAME := $$(tar --version | grep -i bsd > /dev/null 2>&1 && \
+									echo "-s @^dist@${NAME}@")
 dist: build
 	@echo -e "\e[1;34m[+] Generating Distributed ${NAME}.tar.gz\e[0m"
 	envsubst < ./dist/deploy.sh.template | \
@@ -100,7 +104,7 @@ dist: build
 		-e '/.dockerignore/d' | tee sha256sum
 	tar -h --exclude 'deploy.sh.template' --exclude '.gitignore' \
 		--exclude 'deploy.bat.template' --exclude '.dockerignore' \
-		--transform s@^dist@${NAME}@ -czvf ${NAME}.tar.gz dist/
+		${TAR_GNU_RENAME} -czvf ${NAME}.tar.gz ${TAR_BSD_RENAME} dist/
 	@echo -e "\e[1;34m[+] Generated Distributed ${NAME}.tar.gz\e[0m"
 	@echo -n "    md5sum(dist/sha256sum): (old) ${HSH} -> (new) "
 	@md5sum dist/sha256sum | cut -d' ' -f1
