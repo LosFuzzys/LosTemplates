@@ -21,17 +21,17 @@ RUN dnf -y install socat caddy iproute && dnf clean all
 #RUN DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install -y socat podman fuse-overlayfs curl jq && apt-get clean 
 
 # Copy the actual challenge container image
-COPY challenge/challenge.tar /app/
+COPY ./challenge.tar /app/
 RUN chown 1000:1000 /app/challenge.tar
 
-COPY helper/Caddyfile /app/Caddyfile
+COPY Caddyfile /app/Caddyfile
 
 # Copy helper scripts
-COPY helper/run.sh /app/run.sh
+COPY run.sh /app/run.sh
 RUN chmod +x /app/run.sh
-COPY helper/cleaner.sh /app/cleaner.sh
+COPY cleaner.sh /app/cleaner.sh
 RUN chmod +x /app/cleaner.sh
-COPY helper/entrypoint.sh /app/entrypoint.sh
+COPY entrypoint.sh /app/entrypoint.sh
 RUN chmod +x /app/entrypoint.sh
 
 USER 1000
