@@ -260,7 +260,7 @@ define test_fail
 endef
 
 TEST_TIMEOUT_UP=30
-TEST_BOOT_DELAY=0
+TEST_BOOT_DELAY=5
 TEST_LOG := ${MKPATH}/test.log
 test: test-main test-dist
 
