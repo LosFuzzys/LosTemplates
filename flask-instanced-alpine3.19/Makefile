@@ -77,12 +77,12 @@ cbuild:
 	@echo -e "\e[1;34m[+] Building Challenge Container\e[0m"
 	docker build -t ${REGISTRY}/${NAME}-challenge ${BARGS} ./challenge/
 	rm -f challenge/challenge.tar
-	docker save --output challenge/challenge.tar ${REGISTRY}/${NAME}-challenge
+	docker save --output helper/challenge.tar ${REGISTRY}/${NAME}-challenge
 	#docker build -t ${REGISTRY}/${NAME}-build --target builder ${BARGS} .
 	#docker run  -v ${MKPATH}/dist:/dist:z ${REGISTRY}/${NAME}-build
 	#cp ${MKPATH}/challenge/challenge ${MKPATH}/solution/
-	docker build -t ${REGISTRY}/${NAME} ${BARGS} .
-	rm -f challenge/challenge.tar
+	docker build -t ${REGISTRY}/${NAME} ${BARGS} ./helper/
+	rm -f helper/challenge.tar
 
 ckill:
 	@echo -e "\e[1;34m[+] Killing Challenge Container\e[0m"
