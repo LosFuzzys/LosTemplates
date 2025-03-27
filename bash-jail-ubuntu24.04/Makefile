@@ -210,7 +210,7 @@ deploy-quadlet:
 deploy-docker:
 	@echo -e "\e[1;34m[+] Generating docker-compose deployment\e[0m"
 	${RUNTIME} run ghcr.io/losfuzzys/composerize:latest \
-		${RUNTIME} run --rm --name ${NAME} ${RARGS} ${REGISTRY}/${NAME} \
+		docker run --rm --name ${NAME} ${RARGS} ${REGISTRY}/${NAME} \
 		> ${MKPATH}/deployment/docker-compose.yml
 	sed -i '1 s/^.*$$/name: ctf/' ${MKPATH}/deployment/docker-compose.yml
 	@echo "    restart: always" >> ${MKPATH}/deployment/docker-compose.yml
