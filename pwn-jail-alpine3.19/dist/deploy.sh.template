@@ -7,7 +7,7 @@ check() {
 
 build_container() {
   echo -e "\e[1;34m[+] Building Challenge Docker Container\e[0m"
-  docker build -t localhost/chall-${NAME} --platform linux/amd64 . 
+  ${RUNTIME_DIST} build -t localhost/chall-${NAME} --platform linux/amd64 . 
 }
 
 # Common error on default Ubuntu 24.04:
@@ -21,13 +21,13 @@ build_container() {
 
 run_container() {
   echo -e "\e[1;34m[+] Running Challenge Docker Container on ${HOST}:${PORT}\e[0m"
-  docker run --name chall-${NAME} --rm ${RARGS} localhost/chall-${NAME}
+  ${RUNTIME_DIST} run --name chall-${NAME} --rm ${RARGS} localhost/chall-${NAME}
 }
 
 kill_container() {
-	docker ps --filter "name=chall-${NAME}" --format "{{.ID}}" \
+	${RUNTIME_DIST} ps --filter "name=chall-${NAME}" --format "{{.ID}}" \
 		| tr '\n' ' ' \
-		| xargs docker stop -t 0 \
+		| xargs ${RUNTIME_DIST} stop -t 0 \
 		|| true
 }
 
