@@ -68,10 +68,11 @@ crun:
 
 cbuild:
 	@echo -e "\e[1;34m[+] Building Challenge Container\e[0m"
-	docker build -t ${REGISTRY}/${NAME}-build --target builder ${BARGS} challenge/
+	docker build -t ${REGISTRY}/${NAME}-build --target builder ${BARGS} \
+		${MKPATH}/challenge/
 	docker run  -v ${MKPATH}/dist:/dist:z ${REGISTRY}/${NAME}-build
 	cp ${MKPATH}/dist/challenge ${MKPATH}/solution/
-	docker build -t ${REGISTRY}/${NAME} ${BARGS} challenge/
+	docker build -t ${REGISTRY}/${NAME} ${BARGS} ${MKPATH}/challenge/
 
 ckill:
 	@echo -e "\e[1;34m[+] Killing Challenge Container\e[0m"
