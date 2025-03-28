@@ -31,8 +31,12 @@ patch:
 test:
 	@for DIR_NAME in $(wildcard */); do \
 		if [ -f $$DIR_NAME/Makefile ]; then \
-			echo -e "\e[1;35m[+] Testing $$DIR_NAME \e[0m"; \
+			echo -e "\e[1;35m------------------------------------------------\e[0m"; \
+			echo -e "\e[1;35m make -C $$DIR_NAME test \e[0m"; \
+			echo -e "\e[1;35m------------------------------------------------\e[0m"; \
 			make -C $$DIR_NAME test; \
+			echo -e "\e[1;35m------------------------------------------------\e[0m"; \
+			echo -e ""; \
 		fi \
 	done
 
@@ -40,18 +44,38 @@ TIMEOUT_DIST=30
 dist-test:
 	@for DIR_NAME in $(wildcard */); do \
 		if [ -f $$DIR_NAME/Makefile ]; then \
-			echo -e "\e[1;35m[+] Generating dist & Testing $$DIR_NAME \e[0m"; \
+			echo -e "\e[1;35m------------------------------------------------\e[0m"; \
+			echo -e "\e[1;35m make -C $$DIR_NAME dist test \e[0m"; \
+			echo -e "\e[1;35m------------------------------------------------\e[0m"; \
 			echo -e "\e[1;34m[+] Generating dist... \e[0m"; \
 			timeout ${TIMEOUT_DIST} make -C $$DIR_NAME dist &>/dev/null; \
 			make -C $$DIR_NAME test; \
+			echo -e "\e[1;35m------------------------------------------------\e[0m"; \
+			echo -e ""; \
 		fi \
 	done
 
 lint:
 	@for DIR_NAME in $(wildcard */); do \
 		if [ -f $$DIR_NAME/Makefile ]; then \
-			echo -e "\e[1;35m[+] Linting $$DIR_NAME \e[0m"; \
+			echo -e "\e[1;35m------------------------------------------------\e[0m"; \
+			echo -e "\e[1;35m make -C $$DIR_NAME lint \e[0m"; \
+			echo -e "\e[1;35m------------------------------------------------\e[0m"; \
 			make -C $$DIR_NAME lint; \
+			echo -e "\e[1;35m------------------------------------------------\e[0m"; \
+			echo -e ""; \
+		fi \
+	done
+
+kill:
+	@for DIR_NAME in $(wildcard */); do \
+		if [ -f $$DIR_NAME/Makefile ]; then \
+			echo -e "\e[1;35m------------------------------------------------\e[0m"; \
+			echo -e "\e[1;35m make -C $$DIR_NAME kill \e[0m"; \
+			echo -e "\e[1;35m------------------------------------------------\e[0m"; \
+			make -C $$DIR_NAME kill; \
+			echo -e "\e[1;35m------------------------------------------------\e[0m"; \
+			echo -e ""; \
 		fi \
 	done
 
