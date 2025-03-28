@@ -67,28 +67,30 @@ export RARGS ?= \
 	-e TIMEOUT=${TIMEOUT} -e DOMAIN=${DOMAIN} -e DOMAIN_PORT=${DOMAIN_PORT} \
 	-e DOMAIN_PROT=http -e REGISTRY=${REGISTRY} --privileged --platform linux/amd64
 # Docker Build Args
-export BARGS ?= --platform linux/amd64 --build-arg CACHEBUST=${CACHEBUST}
+export BARGS ?= --platform linux/amd64
 
 crun:
 	@echo -e "\e[1;34m[+] Running Challenge Container on ${HOST}:${PORT}\e[0m"
-	docker run --rm --name ${NAME} ${RARGS} ${IT} ${REGISTRY}/${NAME}
+	${RUNTIME} run --rm --name ${NAME} ${RARGS} ${IT} ${REGISTRY}/${NAME}
 
 cbuild:
 	@echo -e "\e[1;34m[+] Building Challenge Container\e[0m"
-	docker build -t ${REGISTRY}/${NAME}-challenge ${BARGS} ./challenge/
+	${RUNTIME} build -t ${REGISTRY}/${NAME}-challenge ${BARGS} \
+		--build-arg CACHEBUST=${CACHEBUST} ${MKPATH}/challenge/
 	rm -f challenge/challenge.tar
-	docker save --output challenge/challenge.tar ${REGISTRY}/${NAME}-challenge
-	#docker build -t ${REGISTRY}/${NAME}-build --target builder ${BARGS} .
-	#docker run  -v ${MKPATH}/dist:/dist:z ${REGISTRY}/${NAME}-build
+	${RUNTIME} save --output helper/challenge.tar ${REGISTRY}/${NAME}-challenge
+	#${RUNTIME} build -t ${REGISTRY}/${NAME}-build --target builder ${BARGS} .
+	#${RUNTIME} run  -v ${MKPATH}/dist:/dist:z ${REGISTRY}/${NAME}-build
 	#cp ${MKPATH}/challenge/challenge ${MKPATH}/solution/
-	docker build -t ${REGISTRY}/${NAME} ${BARGS} .
-	rm -f challenge/challenge.tar
+	${RUNTIME} build -t ${REGISTRY}/${NAME} ${BARGS} \
+		--build-arg CACHEBUST=${CACHEBUST} ${MKPATH}/helper/
+	rm -f helper/challenge.tar
 
 ckill:
 	@echo -e "\e[1;34m[+] Killing Challenge Container\e[0m"
-	docker ps --filter "name=${NAME}" --format "{{.ID}}" \
+	${RUNTIME} ps --filter "name=${NAME}" --format "{{.ID}}" \
 		| tr '\n' ' ' \
-		| xargs docker stop -t 0 \
+		| xargs ${RUNTIME} stop -t 0 \
 		|| true
 
 ##########################
@@ -145,13 +147,13 @@ SBARGS=--platform linux/amd64
 sbuild:
 	@echo -e "\e[1;34m[+] Building Solvescript Container\e[0m"
 	cd solution/ ; \
-	docker build -t ${REGISTRY}/${NAME}-solvescript ${SBARGS} .
+	${RUNTIME} build -t ${REGISTRY}/${NAME}-solvescript ${SBARGS} .
 
 srun:
 	@echo -e "\e[1;34m[+] Running Solvescript Container against" \
 		"${HOST}:${PORT}\e[0m"
 	cd solution/ ; \
-	docker run --rm ${SRARGS} ${IT} \
+	${RUNTIME} run --rm ${SRARGS} ${IT} \
 		--name ${NAME}-solvescript ${REGISTRY}/${NAME}-solvescript
 
 TIMES=10
@@ -159,7 +161,7 @@ srun-sequential:
 	@echo -e "\e[1;34m[+] Running Sequential Container against" \
 		"${HOST}:${PORT}\e[0m"
 	cd solution/ ; \
-	parallel --jobs 1 docker run --rm ${SRARGS} \
+	parallel --jobs 1 ${RUNTIME} run --rm ${SRARGS} \
 		--name ${NAME}-solvescript-sequential-{} ${REGISTRY}/${NAME}-solvescript \
 		::: `seq -s' ' 1 1 ${TIMES}`
 	
@@ -167,15 +169,15 @@ JOBS=2
 srun-parallel:
 	@echo -e "\e[1;34m[+] Running Parallel Container against ${HOST}:${PORT}\e[0m"
 	cd solution/ ; \
-	parallel --jobs ${JOBS} docker run --rm ${SRARGS} \
+	parallel --jobs ${JOBS} ${RUNTIME} run --rm ${SRARGS} \
 		--name ${NAME}-solvescript-parallel-{} ${REGISTRY}/${NAME}-solvescript \
 		::: `seq -s' ' 1 1 ${TIMES}`
 
 skill:
 	@echo -e "\e[1;34m[+] Killing Solution Container/s\e[0m"
-	docker ps --filter "name=${NAME}-solvescript*" --format "{{.ID}}" \
+	${RUNTIME} ps --filter "name=${NAME}-solvescript*" --format "{{.ID}}" \
 		| tr '\n' ' ' \
-		| xargs docker stop -t 0 \
+		| xargs ${RUNTIME} stop -t 0 \
 		|| true
 
 ########################
@@ -196,7 +198,7 @@ deploy-quadlet:
 	@mkdir -p ~/.config/containers/systemd/
 	echo -e "[Unit]\nDescription=Challenge ${NAME}\n" > \
 		~/.config/containers/systemd/chall-${NAME}.container
-	docker run ghcr.io/containers/podlet \
+	${RUNTIME} run ghcr.io/containers/podlet \
 		podman run --rm --name ${NAME} ${RARGS} ${REGISTRY}/${NAME} \
 		>> ~/.config/containers/systemd/chall-${NAME}.container
 	echo -e "\n[Service]\nRestart=always\n\n[Install]\nWantedBy=default.target" \
@@ -218,7 +220,7 @@ deploy-quadlet:
 # Deployment for docker-compose
 deploy-docker:
 	@echo -e "\e[1;34m[+] Generating docker-compose deployment\e[0m"
-	docker run ghcr.io/losfuzzys/composerize:latest \
+	${RUNTIME} run ghcr.io/losfuzzys/composerize:latest \
 		docker run --rm --name ${NAME} ${RARGS} ${REGISTRY}/${NAME} \
 		> ${MKPATH}/deployment/docker-compose.yml
 	sed -i '1 s/^.*$$/name: ctf/' ${MKPATH}/deployment/docker-compose.yml
@@ -234,7 +236,7 @@ deploy-docker:
 # Deployment for registry
 deploy-registry: 
 	@echo -e "\e[1;34m[+] Deploying Container/s\e[0m"
-	docker push ${REGISTRY}/${NAME}
+	${RUNTIME} push ${REGISTRY}/${NAME}
 
 #############
 # Testsuite #
@@ -243,7 +245,7 @@ deploy-registry:
 define test_solve_container
 	@F='1'; \
 	for w in `seq -s' ' 1 1 ${TEST_TIMEOUT_UP}`; do \
-		[ "`docker ps --format 'UP' --filter "name=${NAME}"`" == "UP" ] && \
+		[ "`$1 ps --format 'UP' --filter "name=${NAME}"`" == "UP" ] && \
 		F='0' && break || sleep 1; \
 	done; \
 	[ "$$F" == "1" ] && echo -e "\e[1;31mTimeout reached\e[0m" && exit 1 || true 
@@ -275,7 +277,7 @@ test-main:
 	@[ "${TEST_BOOT_DELAY}" -eq "0" ] || \
 		(echo -e "[+] wait ${TEST_BOOT_DELAY}s for the challenge to boot" && \
 		sleep ${TEST_BOOT_DELAY})
-	@$(call test_solve_container)
+	@$(call test_solve_container,${RUNTIME})
 	@make kill > /dev/null 2>&1
 	@${RM} ${MKPATH}/test.log
 
@@ -289,8 +291,8 @@ test-dist:
 	@[ "${TEST_BOOT_DELAY}" -eq "0" ] || \
 		(echo -e "[+] wait ${TEST_BOOT_DELAY}s for the challenge to boot" && \
 		sleep ${TEST_BOOT_DELAY})
-	@$(call test_solve_container)
-	@make kill > /dev/null 2>&1
+	@$(call test_solve_container,${RUNTIME_DIST})
+	@make kill RUNTIME=${RUNTIME_DIST} > /dev/null 2>&1
 	@${RM} ${MKPATH}/test.log
 
 ###########
@@ -298,6 +300,8 @@ test-dist:
 ###########
 
 SHELL := /usr/bin/env bash
+export RUNTIME ?= docker
+export RUNTIME_DIST ?= docker
 
 define lint_assert_file_exists
 	@([ ! -f ${MKPATH}/${1} ] && \
