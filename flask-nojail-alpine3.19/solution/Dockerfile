@@ -19,8 +19,6 @@ USER root
 RUN chmod 755 /app/exploit
 USER pwntools
 
-COPY challenge /app/challenge
-
 ENV PWNLIB_NOTERM=1
 
 CMD /usr/bin/timeout -k 5 ${TIMEOUT} ./exploit HOST=${HOST} PORT=${PORT}
