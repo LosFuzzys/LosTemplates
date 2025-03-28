@@ -66,7 +66,7 @@ export RARGS ?= -p ${HOST}:${PORT}:1337 -e HOST=${HOST} -e PORT=${PORT} \
 	-e TIMEOUT=${TIMEOUT} -e PUBPORTSTART=${PUBPORTSTART} -e DOMAIN=${DOMAIN} \
 	-e PUBPORTEND=${PUBPORTEND} \
 	-p ${HOST}:${PUBPORTSTART}-${PUBPORTEND}:${PUBPORTSTART}-${PUBPORTEND} \
-	--user 1337:1337 --read-only --tmpfs=/tmp --privileged --platform linux/amd64
+	--read-only --tmpfs=/tmp --privileged --platform linux/amd64
 # Docker Build Args
 export BARGS ?= --platform linux/amd64
 
