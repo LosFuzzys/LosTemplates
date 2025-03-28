@@ -4,7 +4,7 @@
 
 import os
 import random
-from flask import Flask
+from flask import Flask, render_template
 from waitress import serve
 
 # create and configure the app
@@ -12,21 +12,14 @@ app = Flask(__name__, instance_relative_config=True)
 app.config.from_mapping(
     SECRET_KEY=random.randbytes(128)
 )
-# ensure the instance folder exists
-try:
-    os.makedirs(app.instance_path)
-except OSError:
-    pass
-
 @app.route('/')
-def index():
-    print("Log something", flush=True) # flush=True is required for printing in flask applications 
-    return 'Hello, World!'
+def index():  # put application's code here
+    print("Log something", flush=True) # flush=True is required for printing in flask applications
+    return render_template('index.html')
 
 @app.route('/flag')
-def hello():
-    with open("/flag.txt") as f:
-        return f.read()
-
+def challenge():
+    flag = os.environ.get('FLAG', 'FLAG{FAKE_FLAG}')
+    return render_template('flag.html', flag=flag)
 
 serve(app, host='0.0.0.0', port=1337)

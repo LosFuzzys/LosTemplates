@@ -13,14 +13,14 @@ RUN python3 -m venv /.venv
 ENV PATH="/.venv/bin:$PATH"
 
 # Install pip dependencies
-COPY ./requirements.txt /app/requirements.txt
+COPY requirements.txt /app/requirements.txt
 RUN pip install --no-cache-dir --upgrade -r /app/requirements.txt 
 
 # Copy challenge required files
 RUN mkdir -p /app
-COPY ./challenge /app/challenge
-RUN chmod +x /app/challenge
-COPY ./flag.txt /flag.txt
-COPY ./entrypoint.sh /app/entrypoint.sh
+COPY entrypoint.sh /app
+COPY flag.txt /flag.txt
+COPY src/ /app
+RUN chmod +x /app/app.py
 
 CMD /app/entrypoint.sh
