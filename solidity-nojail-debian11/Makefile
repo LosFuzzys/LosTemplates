@@ -38,7 +38,7 @@ export TIMEOUT        = 30
 export PUBPORT        = 31337
 export PUBPORT_HTTP   = 8545
 export PER_SOURCE     = 10000
-export SHARED_SECRET  = NxPn5v9H2w7JPUrJYow4SQEPBMvpMgVeWcx3uzgbKaBKcQnpURhQUrNudXC88xNcCmHT8kavFsoQqTbCBqWckTAJpzR6XjJrTjGEU2rPYpTUvvtu9QBLWzC9sDv2mVo
+export SHARED_SECRET  = $$(tr -dc A-Za-z0-9 </dev/urandom | head -c 128; echo)
 # this public IP can wither be a IP or a dns-name
 # (but no protocol, that is being added by the framework)
 #export PUBLIC_IP      = glacierctf.com
