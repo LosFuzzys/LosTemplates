@@ -40,7 +40,7 @@ with `make version`.
 
 ### Challenge Author
 
-Install `docker`, `bash`, `make`, GNU `envsubst`, GNU `tar`, GNU `coreutils`
+Install `docker`, `bash`, `make`, GNU `envsubst`, GNU/BSD `tar`, GNU `coreutils`
 and `parallel`.
 
 **Ubuntu**:
