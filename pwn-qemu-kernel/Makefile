@@ -37,9 +37,10 @@ export TIMEOUT  = 30
 # Port for public deployments
 export PUBPORT  = 10000
 
+# TODO TODO TODO INCREASE PUBPORTSTART-PUBPORTEND RANGE BEFORE the CTF
 export DOMAIN        = 127.0.0.1
 export PUBPORTSTART  = 20000
-export PUBPORTEND    = 30000
+export PUBPORTEND    = 20035
 
 # Slugified challenge name. Default to directory name
 MKPATH:=$(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
@@ -65,7 +66,7 @@ export RARGS ?= -p ${HOST}:${PORT}:1337 -e HOST=${HOST} -e PORT=${PORT} \
 	-e TIMEOUT=${TIMEOUT} -e PUBPORTSTART=${PUBPORTSTART} -e DOMAIN=${DOMAIN} \
 	-e PUBPORTEND=${PUBPORTEND} \
 	-p ${HOST}:${PUBPORTSTART}-${PUBPORTEND}:${PUBPORTSTART}-${PUBPORTEND} \
-	--user 1337:1337 --read-only --tmpfs=/tmp --privileged --platform linux/amd64
+	--read-only --tmpfs=/tmp --privileged --platform linux/amd64
 # Docker Build Args
 export BARGS ?= --platform linux/amd64
 

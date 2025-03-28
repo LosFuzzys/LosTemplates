@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+echo -e "Press [ENTER] to start the instance"
+read -n1
+
 # Generate temporary directory per connection
 DIR=$(mktemp -d --suffix=--gctf-qemu)
 cd ${DIR}
