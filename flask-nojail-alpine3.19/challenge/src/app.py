@@ -20,6 +20,8 @@ def index():  # put application's code here
 @app.route('/flag')
 def challenge():
     flag = os.environ.get('FLAG', 'FLAG{FAKE_FLAG}')
+    # Alternatively, you can read the flag from /flag.txt
+    # flag = open("/flag.txt").read()
     return render_template('flag.html', flag=flag)
 
 serve(app, host='0.0.0.0', port=1337)
