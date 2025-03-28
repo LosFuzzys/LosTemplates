@@ -5,7 +5,9 @@
 FROM docker.io/pwntools/pwntools@sha256:2df32ff2a7196a6f6d362b037713ec9825266667774df31540bbb9d04f7662ee
 
 # Install apt dependencies if needed
+# USER root
 # RUN DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install -y ... && apt-get clean
+# USER pwntools
 
 WORKDIR /app
 COPY requirements.txt .
