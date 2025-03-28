@@ -37,9 +37,10 @@ export TIMEOUT  = 30
 # Port for public deployments
 export PUBPORT  = 10000
 
+# TODO TODO TODO INCREASE PUBPORTSTART-PUBPORTEND RANGE BEFORE the CTF
 export DOMAIN        = 127.0.0.1
 export PUBPORTSTART  = 20000
-export PUBPORTEND    = 30000
+export PUBPORTEND    = 20035
 
 # Slugified challenge name. Default to directory name
 MKPATH:=$(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))

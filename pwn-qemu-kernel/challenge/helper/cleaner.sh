@@ -2,9 +2,9 @@
 
 while true;
 do
-	for f in /tmp/tmp.*--ssd-qemu; do
+	for f in /tmp/tmp.*--gctf-qemu; do
 		
-		if [ "${f}" == "/tmp/tmp.*--ssd-qemu" ]
+		if [ "${f}" == "/tmp/tmp.*--gctf-qemu" ]
 		then
 			echo "[+] Nothing to clean"
 			continue

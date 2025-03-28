@@ -1,7 +1,6 @@
 .PHONY: all
 
 # This won't get run automatically. You can use this as a personal helper
-# Do not put this in /dist
 
 obj-m += module.o 
 PWD := $(CURDIR) 
