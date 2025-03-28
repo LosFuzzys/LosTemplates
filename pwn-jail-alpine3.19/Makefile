@@ -69,10 +69,12 @@ crun:
 
 cbuild:
 	@echo -e "\e[1;34m[+] Building Challenge Container\e[0m"
-	${RUNTIME} build -t ${REGISTRY}/${NAME}-build --target builder ${BARGS} .
+	${RUNTIME} build -t ${REGISTRY}/${NAME}-build --target builder ${BARGS} \
+		${MKPATH}/challenge/
 	${RUNTIME} run  -v ${MKPATH}/dist:/dist:z ${REGISTRY}/${NAME}-build
 	cp ${MKPATH}/dist/challenge ${MKPATH}/solution/
-	${RUNTIME} build -t ${REGISTRY}/${NAME} ${BARGS} .
+	${RUNTIME} build -t ${REGISTRY}/${NAME} ${BARGS} \
+		--build-arg CACHEBUST=${CACHEBUST} ${MKPATH}/challenge/
 
 ckill:
 	@echo -e "\e[1;34m[+] Killing Challenge Container\e[0m"

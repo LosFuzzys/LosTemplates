@@ -7,7 +7,7 @@ check() {
 
 build_container() {
   echo -e "\e[1;34m[+] Building Challenge Docker Container\e[0m"
-  ${RUNTIME_DIST} build -t localhost/chall-${NAME} --platform linux/amd64 . 
+  ${RUNTIME_DIST} build -t localhost/chall-${NAME} ${BARGS} . 
 }
 
 # Common error on default Ubuntu 24.04:

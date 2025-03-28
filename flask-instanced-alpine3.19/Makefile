@@ -67,7 +67,7 @@ export RARGS ?= \
 	-e TIMEOUT=${TIMEOUT} -e DOMAIN=${DOMAIN} -e DOMAIN_PORT=${DOMAIN_PORT} \
 	-e DOMAIN_PROT=http -e REGISTRY=${REGISTRY} --privileged --platform linux/amd64
 # Docker Build Args
-export BARGS ?= --platform linux/amd64 --build-arg CACHEBUST=${CACHEBUST}
+export BARGS ?= --platform linux/amd64
 
 crun:
 	@echo -e "\e[1;34m[+] Running Challenge Container on ${HOST}:${PORT}\e[0m"
@@ -75,14 +75,16 @@ crun:
 
 cbuild:
 	@echo -e "\e[1;34m[+] Building Challenge Container\e[0m"
-	${RUNTIME} build -t ${REGISTRY}/${NAME}-challenge ${BARGS} ./challenge/
+	${RUNTIME} build -t ${REGISTRY}/${NAME}-challenge ${BARGS} \
+		--build-arg CACHEBUST=${CACHEBUST} ${MKPATH}/challenge/
 	rm -f challenge/challenge.tar
-	${RUNTIME} save --output challenge/challenge.tar ${REGISTRY}/${NAME}-challenge
+	${RUNTIME} save --output helper/challenge.tar ${REGISTRY}/${NAME}-challenge
 	#${RUNTIME} build -t ${REGISTRY}/${NAME}-build --target builder ${BARGS} .
 	#${RUNTIME} run  -v ${MKPATH}/dist:/dist:z ${REGISTRY}/${NAME}-build
 	#cp ${MKPATH}/challenge/challenge ${MKPATH}/solution/
-	${RUNTIME} build -t ${REGISTRY}/${NAME} ${BARGS} .
-	rm -f challenge/challenge.tar
+	${RUNTIME} build -t ${REGISTRY}/${NAME} ${BARGS} \
+		--build-arg CACHEBUST=${CACHEBUST} ${MKPATH}/helper/
+	rm -f helper/challenge.tar
 
 ckill:
 	@echo -e "\e[1;34m[+] Killing Challenge Container\e[0m"
@@ -260,7 +262,7 @@ define test_fail
 endef
 
 TEST_TIMEOUT_UP=30
-TEST_BOOT_DELAY=0
+TEST_BOOT_DELAY=5
 TEST_LOG := ${MKPATH}/test.log
 test: test-main test-dist
 

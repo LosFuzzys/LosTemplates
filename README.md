@@ -44,7 +44,7 @@ Install `docker`, `bash`, `make`, GNU `envsubst`, GNU `tar`, GNU `coreutils`
 and `parallel`.
 
 **Ubuntu**:
-```
+```sh
 # Ubuntu 24.04
 sudo apt install bash make gettext tar coreutils parallel
 # Install podman or docker at your choice
@@ -52,7 +52,7 @@ sudo apt install podman podman-docker
 ```
 
 **Fedora**:
-```
+```sh
 # Fedora 41
 sudo dnf install bash make gettext-envsubst tar coreutils parallel
 # Install podman or docker at your choice
@@ -60,7 +60,7 @@ sudo dnf install podman podman-docker
 ```
 
 **Arch**:
-```
+```sh
 sudo pacman -S bash make gettext tar coreutils parallel
 # Install podman or docker at your choice
 sudo pacman -S docker
@@ -71,7 +71,7 @@ yay docker-rootless-extras
 
 **Nix**:
 
-```
+```sh
 nix develop
 ```
 
