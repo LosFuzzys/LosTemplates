@@ -23,4 +23,4 @@ COPY challenge .
 
 ENV PWNLIB_NOTERM=1
 
-CMD /usr/bin/timeout -k 5 ${TIMEOUT} ./exploit HOST=${HOST} PORT=${PORT}
+CMD /usr/bin/timeout -k 5 ${TIMEOUT} ./exploit REMOTE HOST=${HOST} PORT=${PORT}
