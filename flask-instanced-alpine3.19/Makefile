@@ -77,12 +77,12 @@ cbuild:
 	@echo -e "\e[1;34m[+] Building Challenge Container\e[0m"
 	docker build -t ${REGISTRY}/${NAME}-challenge ${BARGS} ./challenge/
 	rm -f challenge/challenge.tar
-	docker save --output challenge/challenge.tar ${REGISTRY}/${NAME}-challenge
+	docker save --output helper/challenge.tar ${REGISTRY}/${NAME}-challenge
 	#docker build -t ${REGISTRY}/${NAME}-build --target builder ${BARGS} .
 	#docker run  -v ${MKPATH}/dist:/dist:z ${REGISTRY}/${NAME}-build
 	#cp ${MKPATH}/challenge/challenge ${MKPATH}/solution/
-	docker build -t ${REGISTRY}/${NAME} ${BARGS} .
-	rm -f challenge/challenge.tar
+	docker build -t ${REGISTRY}/${NAME} ${BARGS} ./helper/
+	rm -f helper/challenge.tar
 
 ckill:
 	@echo -e "\e[1;34m[+] Killing Challenge Container\e[0m"
@@ -260,7 +260,7 @@ define test_fail
 endef
 
 TEST_TIMEOUT_UP=30
-TEST_BOOT_DELAY=0
+TEST_BOOT_DELAY=5
 TEST_LOG := ${MKPATH}/test.log
 test: test-main test-dist
 
