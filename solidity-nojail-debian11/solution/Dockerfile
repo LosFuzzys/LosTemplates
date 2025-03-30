@@ -4,7 +4,7 @@
 ###############
 # Base system #
 ###############
-FROM docker.io/library/python@sha256:db1afbfdc089b792bed227d70e1b1607c16bacb391f1257b7af1f0e6b2384480
+FROM docker.io/library/python@sha256:ebfa8696e47a68cffebb31e370a93ce57c01bc753f246ceaaef72801d1661351
 
 # Install apt dependencies if needed
 RUN DEBIAN_FRONTEND=noninteractive apt-get update \

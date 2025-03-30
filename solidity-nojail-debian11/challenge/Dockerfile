@@ -3,7 +3,7 @@
 ###############
 # Base system #
 ###############
-FROM docker.io/library/python@sha256:a1f8d596b9400f5af381e6e8482bf97424bf0c1e8f41361a95497c89d5514dfc
+FROM docker.io/library/python@sha256:ebfa8696e47a68cffebb31e370a93ce57c01bc753f246ceaaef72801d1661351
 
 # environment variables used in 00-create-xinetd-service
 ENV PORT=31337
