@@ -3,7 +3,7 @@
 ##################
 # Builder system #
 ##################
-FROM docker.io/library/alpine@sha256:e5d0aea7f7d2954678a9a6269ca2d06e06591881161961ea59e974dff3f12377 AS builder
+FROM docker.io/library/alpine@sha256:a8560b36e8b8210634f77d9f7f9efd7ffa463e380b75e2e74aff4511df3ef88c AS builder
 
 # Install apt dependencies if needed
 RUN apk update && apk add --no-cache gcc make musl-dev && rm -rf /var/cache/apk/*
@@ -20,7 +20,7 @@ CMD cp /tmp/build/challenge /dist/challenge
 #################
 # Runner system #
 #################
-FROM docker.io/library/alpine@sha256:e5d0aea7f7d2954678a9a6269ca2d06e06591881161961ea59e974dff3f12377
+FROM docker.io/library/alpine@sha256:a8560b36e8b8210634f77d9f7f9efd7ffa463e380b75e2e74aff4511df3ef88c
 
 # Install apt dependencies if needed
 RUN apk update && apk add --no-cache coreutils socat && rm -rf /var/cache/apk/*

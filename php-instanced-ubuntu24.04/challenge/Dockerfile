@@ -1,7 +1,7 @@
 # Debian 12
-# PHP 8.7.3
-# Apache 2.4.59
-FROM docker.io/library/php@sha256:88cccc4e34d127a42f11d670ca94910d958f0a0bf3bfc8dc58fd6c0f22ac3b2d
+# PHP 8.4.5
+# Apache 2.4.62
+FROM docker.io/library/php@sha256:56a121dbe0a1f2dfd20b24d28408a0ec67c2e480b59a41d4c6c012870984bea6
 
 # Copy challenge required files
 COPY ./config/php.ini $PHP_INI_DIR/php.ini
