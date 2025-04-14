@@ -5,7 +5,7 @@
 ###############
 # Base system #
 ###############
-FROM docker.io/sagemath/sagemath@sha256:aeefedc716b4f475ddc5f8d8140dbb231868b8a2e5882044845c83d41d1014a5
+FROM docker.io/sagemath/sagemath@sha256:19995db6194f4a4bab18ce9a88556fd15b9ed5e916b4504fefe618a7796ddbdb
 
 # Run as root
 USER 0
