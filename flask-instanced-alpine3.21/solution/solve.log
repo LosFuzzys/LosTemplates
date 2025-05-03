@@ -1,0 +1,10 @@
+[+] If you run distrun this might take a bit
+[x] Opening connection to 127.0.0.1 on port 1337
+[x] Opening connection to 127.0.0.1 on port 1337: Trying 127.0.0.1
+[+] Opening connection to 127.0.0.1 on port 1337: Done
+[+] Created new instance: a51b335e71aec1ffb2859afb3ae03bb9.localhost:8080
+[+] Waiting 5 seconds until instance is up
+[+] Running exploit
+[+] Base domain http://127.0.0.1:8080
+[93m[+] Flag: gctf{REAL_REAL_REAL_REAL_REAL_REAL}[0m
+[*] Closed connection to 127.0.0.1 port 1337

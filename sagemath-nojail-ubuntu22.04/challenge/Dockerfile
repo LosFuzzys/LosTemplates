@@ -1,6 +1,6 @@
-# Ubuntu 22.04.4 LTS
-# SageMath version 10.3 stable
-# Python 3.11.1
+# Ubuntu 22.04.5 LTS
+# SageMath version 10.6 stable
+# Python 3.12.5
 
 ###############
 # Base system #

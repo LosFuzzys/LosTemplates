@@ -1,9 +1,9 @@
-# Python 3.9.13 with Debian Bullseye (base system)
+# Python 3.9.22 with Debian Bullseye (base system)
 
 ###############
 # Base system #
 ###############
-FROM docker.io/library/python@sha256:18159b2be11db91f84b8f8f655cd860f805dbd9e49a583ddaac8ab39bf4fe1a7
+FROM docker.io/library/python@sha256:460af7209c9559d38047928f6ab66312e5274e42ef7f502eed624ff5ae8a15be
 
 # environment variables used in 00-create-xinetd-service
 ENV PORT=31337
