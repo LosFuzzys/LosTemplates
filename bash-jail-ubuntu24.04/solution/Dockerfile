@@ -12,8 +12,8 @@ FROM docker.io/pwntools/pwntools@sha256:1707bef16a3fb924d53231d899eeecaf18b5ebbb
 WORKDIR /app
 COPY requirements.txt .
 
-# Install pip dependencies
-RUN python3 -m pip install --no-cache-dir --upgrade -r /app/requirements.txt
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
+RUN uv pip sync /app/requirements.txt
 
 # Copy needed files to /app
 COPY exploit .
