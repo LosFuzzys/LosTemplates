@@ -13,17 +13,17 @@ kill: ckill skill
 # CTFd Configuration #
 ######################
 
-export FULLNAME = CTFd challenge name
-export AUTHOR   = LosFuzzys
-export CATEGORY = pwn
+export FULLNAME  = CTFd challenge name
+export AUTHOR    = LosFuzzys
+export CATEGORY  = pwn
 define DESC
 This is a multiline challenge description!
 
 Feel free to add more lines.
 endef
 export DESC
-export FLAG     = $(shell cat challenge/flag.txt)
-export TAG      = CTFd tag
+export FLAG      = $(shell cat challenge/flag.txt)
+export TAG       = CTFd tag
 
 ############################
 # Deployment Configuration #
@@ -120,20 +120,38 @@ sbuild:
 	cd solution/ ; \
 	docker build -t ${REGISTRY}/${NAME}-solvescript ${SBARGS} .
 
+define run_check
+	cd solution/ ; \
+	echo -e	"\e[1;36m>>>>>>>>>>>>>> START $$(date +'%H:%M:%S')\e[0m"; \
+	exec 3>&1 ; \
+	O=$$(docker run --rm ${SRARGS} ${2} --name ${NAME}-solvescript${1} \
+		${REGISTRY}/${NAME}-solvescript 3>&- | tee /dev/fd/3) ; \
+	RETVAL=$$? ; \
+	exec 3>&- ; \
+	echo -e	"\e[1;36m<<<<<<<<<<<<<< END $$(date +'%H:%M:%S')\e[0m"; \
+	printf "$$O" | grep ${FLAG} > /dev/null 2>&1 && \
+		echo -e "\033[1;32m[+] Real flag found: ${FLAG}\033[0;0m" || ( \
+		([[ "$$RETVAL" -eq "0" ]] && \
+		echo -e "\033[1;31m[!] Flag not found\033[0;0m"; exit 1))
+endef
+
 srun:
 	@echo -e "\e[1;34m[+] Running Solvescript Container against" \
 		"${HOST}:${PORT}\e[0m"
-	cd solution/ ; \
-	docker run --rm ${SRARGS} -it \
-		--name ${NAME}-solvescript ${REGISTRY}/${NAME}-solvescript
+	@$(call run_check,,-it)
 
 TIMES=10
 srun-sequential:
-	@echo -e "\e[1;34m[+] (srun-sequential) Not implemented in this template\e[0m"
+	@echo -e "\e[1;34m[+] Running Sequential Container against" \
+		"${HOST}:${PORT}\e[0m"
+	@parallel --line-buffer --jobs 1 '$(call run_check,-sequential-{},)' \
+		::: `seq -s' ' 1 1 ${TIMES}`
 	
-JOBS=2
+JOBS=4
 srun-parallel:
-	@echo -e "\e[1;34m[+] (srun-parallel) Not implemented in this template\e[0m"
+	@echo -e "\e[1;34m[+] Running Parallel Container against ${HOST}:${PORT}\e[0m"
+	@parallel --jobs ${JOBS} '$(call run_check,-parallel-{},)' \
+		::: `seq -s' ' 1 1 ${TIMES}`
 
 skill:
 	@echo -e "\e[1;34m[+] Killing Solution Container/s\e[0m"

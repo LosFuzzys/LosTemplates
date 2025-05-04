@@ -7,9 +7,9 @@
 FROM docker.io/library/python@sha256:18159b2be11db91f84b8f8f655cd860f805dbd9e49a583ddaac8ab39bf4fe1a7
 
 # Install apt dependencies if needed
-RUN DEBIAN_FRONTEND=noninteractive apt-get update \
-    && apt-get install -y curl git \
-    && apt-get clean \
+RUN DEBIAN_FRONTEND=noninteractive apt update \
+    && apt install -y curl git \
+    && apt clean \
     && python -m pip install pwntools
 
 # Install Foundary
