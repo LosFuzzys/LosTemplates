@@ -1,8 +1,8 @@
-# - Ubuntu 22.04.4 LTS
-# - pwntools v4.12.0 stable
-# - Python 3.10.12
-# - GLIBC 2.35-0ubuntu3.6
-FROM docker.io/pwntools/pwntools@sha256:2df32ff2a7196a6f6d362b037713ec9825266667774df31540bbb9d04f7662ee
+# - Ubuntu 24.04.1 LTS
+# - pwntools v4.14.1 stable
+# - Python 3.12.3
+# - GLIBC 2.39-0ubuntu8.4
+FROM docker.io/pwntools/pwntools@sha256:1707bef16a3fb924d53231d899eeecaf18b5ebbb78e23c38d41dcd19d147bf6b
 
 # Install apt dependencies if needed
 # USER root
@@ -12,8 +12,8 @@ FROM docker.io/pwntools/pwntools@sha256:2df32ff2a7196a6f6d362b037713ec9825266667
 WORKDIR /app
 COPY requirements.txt .
 
-# Install pip dependencies
-RUN python3 -m pip install --no-cache-dir --upgrade -r /app/requirements.txt
+COPY --from=ghcr.io/astral-sh/uv:0.7.2 /uv /uvx /bin/
+RUN uv pip sync /app/requirements.txt
 
 # Copy needed files to /app
 COPY exploit .

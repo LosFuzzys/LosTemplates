@@ -1,13 +1,13 @@
-# Ubuntu 24.04
+# Alpine 3.21.3 (base system)
 # Python 3.12
 
 ###############
 # Base system #
 ###############
-FROM docker.io/library/ubuntu@sha256:1e622c5f073b4f6bfad6632f2616c7f59ef256e96fe78bf6a595d1dc4376ac02 AS builder
+FROM docker.io/library/alpine@sha256:a8560b36e8b8210634f77d9f7f9efd7ffa463e380b75e2e74aff4511df3ef88c
 
 # Install apt dependencies if needed
-RUN DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install -y python3 python3-venv socat coreutils && apt-get clean
+RUN apk update && apk add --no-cache socat python3 py3-pip coreutils && rm -rf /var/cache/apk/*
 
 # Enable the virtual enviroment
 RUN python3 -m venv /.venv

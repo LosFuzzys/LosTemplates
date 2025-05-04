@@ -1,15 +1,13 @@
-# Ubuntu 24.04
-# Rust 1.75
-# GCC 13.3.0
-# GLIBC 2.39
+# Alpine 3.21.3
+# Rust 1.83
 
 ##################
 # Builder system #
 ##################
-FROM docker.io/library/ubuntu@sha256:1e622c5f073b4f6bfad6632f2616c7f59ef256e96fe78bf6a595d1dc4376ac02 AS builder
+FROM docker.io/library/alpine@sha256:a8560b36e8b8210634f77d9f7f9efd7ffa463e380b75e2e74aff4511df3ef88c AS builder
 
-# Install apt dependencies if needed
-RUN DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install -y cargo make gcc && apt-get clean 
+# Install apk dependencies if needed
+RUN apk update && apk add --no-cache cargo make libc6-compat && rm -rf /var/cache/apk/*
 
 COPY . /tmp/build/
 RUN make -C /tmp/build/ challenge
@@ -23,10 +21,10 @@ CMD cp /tmp/build/challenge /dist/challenge
 #################
 # Runner system #
 #################
-FROM docker.io/library/ubuntu@sha256:1e622c5f073b4f6bfad6632f2616c7f59ef256e96fe78bf6a595d1dc4376ac02
+FROM docker.io/library/alpine@sha256:a8560b36e8b8210634f77d9f7f9efd7ffa463e380b75e2e74aff4511df3ef88c
 
-# Install apt dependencies if needed
-RUN DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install -y socat coreutils && apt-get clean 
+# Install apk dependencies if needed
+RUN apk update && apk add --no-cache socat libgcc coreutils && rm -rf /var/cache/apk/*
 
 # Copy challenge required files
 RUN mkdir -p /app

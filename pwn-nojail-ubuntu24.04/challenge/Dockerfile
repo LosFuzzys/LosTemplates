@@ -1,15 +1,15 @@
 # Ubuntu 24.04
-# GCC 13.2.0
-# Clang 18.0
+# GCC 13.3.0
+# Clang 18.1.3
 # GLIBC 2.39
 
 ##################
 # Builder system #
 ##################
-FROM docker.io/library/ubuntu@sha256:3f85b7caad41a95462cf5b787d8a04604c8262cdcdf9a472b8c52ef83375fe15 AS builder
+FROM docker.io/library/ubuntu@sha256:1e622c5f073b4f6bfad6632f2616c7f59ef256e96fe78bf6a595d1dc4376ac02 AS builder
 
 # Install apt dependencies if needed
-RUN DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install -y make gcc && apt-get clean 
+RUN DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install -y make gcc clang && apt-get clean 
 
 COPY . /tmp/build/
 RUN make -C /tmp/build/ challenge
@@ -23,7 +23,7 @@ CMD cp /tmp/build/challenge /dist/challenge
 #################
 # Runner system #
 #################
-FROM docker.io/library/ubuntu@sha256:3f85b7caad41a95462cf5b787d8a04604c8262cdcdf9a472b8c52ef83375fe15
+FROM docker.io/library/ubuntu@sha256:1e622c5f073b4f6bfad6632f2616c7f59ef256e96fe78bf6a595d1dc4376ac02
 
 # Install apt dependencies if needed
 RUN DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install -y socat coreutils && apt-get clean 

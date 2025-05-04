@@ -1,15 +1,12 @@
-# Ubuntu 24.04
-# GCC 13.3.0
-# Clang 18.1.3
-# GLIBC 2.39
+# Alpine 3.21.3 (base system)
 
 ##################
 # Builder system #
 ##################
-FROM docker.io/library/ubuntu@sha256:1e622c5f073b4f6bfad6632f2616c7f59ef256e96fe78bf6a595d1dc4376ac02 AS builder
+FROM docker.io/library/alpine@sha256:a8560b36e8b8210634f77d9f7f9efd7ffa463e380b75e2e74aff4511df3ef88c AS builder
 
 # Install apt dependencies if needed
-RUN DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install -y make gcc clang && apt-get clean 
+RUN apk update && apk add --no-cache gcc make musl-dev && rm -rf /var/cache/apk/*
 
 COPY . /tmp/build/
 RUN make -C /tmp/build/ challenge
@@ -23,10 +20,10 @@ CMD cp /tmp/build/challenge /dist/challenge
 ###############
 # Base system #
 ###############
-FROM docker.io/library/ubuntu@sha256:1e622c5f073b4f6bfad6632f2616c7f59ef256e96fe78bf6a595d1dc4376ac02 AS base
+FROM docker.io/library/alpine@sha256:a8560b36e8b8210634f77d9f7f9efd7ffa463e380b75e2e74aff4511df3ef88c AS base
 
 # Install apt dependencies if needed
-RUN DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install -y coreutils && apt-get clean 
+RUN apk update && apk add --no-cache coreutils && rm -rf /var/cache/apk/*
 
 #################
 # Runner system #
@@ -67,5 +64,5 @@ CMD nsjail \
     -u 1337:1337:1 \
     -g 1337:1337:1 \
     -u 65534:65534:1 \
-    -g 65534:65534:1 \ 
+    -g 65534:65534:1 \
     -- /app/entrypoint.sh

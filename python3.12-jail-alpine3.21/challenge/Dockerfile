@@ -1,32 +1,21 @@
-# Ubuntu 24.04
-# GCC 13.3.0
-# Clang 18.1.3
-# GLIBC 2.39
-
-##################
-# Builder system #
-##################
-FROM docker.io/library/ubuntu@sha256:1e622c5f073b4f6bfad6632f2616c7f59ef256e96fe78bf6a595d1dc4376ac02 AS builder
-
-# Install apt dependencies if needed
-RUN DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install -y make gcc clang && apt-get clean 
-
-COPY . /tmp/build/
-RUN make -C /tmp/build/ challenge
-# Copy final binary to dist
-# CACHEBUST is a Docker trick to invalidate the cache at a exact point
-# if not, when docker has cached the compilation it wouldn't output
-# the binary to our dist/ directory so we can pack it for distribution
-ARG CACHEBUST=1
-CMD cp /tmp/build/challenge /dist/challenge
+# Alpine 3.21.3 (base system)
+# Python 3.12
 
 ###############
 # Base system #
 ###############
-FROM docker.io/library/ubuntu@sha256:1e622c5f073b4f6bfad6632f2616c7f59ef256e96fe78bf6a595d1dc4376ac02 AS base
+FROM docker.io/library/alpine@sha256:a8560b36e8b8210634f77d9f7f9efd7ffa463e380b75e2e74aff4511df3ef88c AS base
 
 # Install apt dependencies if needed
-RUN DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install -y coreutils && apt-get clean 
+RUN apk update && apk add --no-cache socat python3 py3-pip coreutils file && rm -rf /var/cache/apk/*
+
+# Enable the virtual enviroment
+RUN python3 -m venv /.venv
+ENV PATH="/.venv/bin:$PATH"
+
+# Install pip dependencies
+COPY requirements.txt /app/requirements.txt
+RUN pip install --no-cache-dir --upgrade -r /app/requirements.txt 
 
 #################
 # Runner system #
@@ -35,14 +24,14 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install -y coreutil
 FROM docker.io/opensuse/tumbleweed@sha256:404df0954fda18f5d823ed520a41ff6e60d7ab00b2ef688477b679c2ff742560 
 
 # Install apk dependencies if needed
-RUN zypper -n install nsjail && zypper -n clean --all
+RUN zypper -n install nsjail fakeroot && zypper -n clean --all
 
 # Copy base filesystem
 COPY --from=base / /jail
 
 # Copy challenge required files
 RUN mkdir -p /jail/app
-COPY --from=builder /tmp/build/challenge /jail/app/challenge
+COPY challenge /jail/app/challenge
 RUN chmod +x /jail/app/challenge
 COPY flag.txt /jail/flag.txt
 COPY entrypoint.sh /jail/app/entrypoint.sh
@@ -67,5 +56,5 @@ CMD nsjail \
     -u 1337:1337:1 \
     -g 1337:1337:1 \
     -u 65534:65534:1 \
-    -g 65534:65534:1 \ 
+    -g 65534:65534:1 \
     -- /app/entrypoint.sh
