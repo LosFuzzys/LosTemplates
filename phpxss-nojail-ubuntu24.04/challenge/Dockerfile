@@ -23,7 +23,10 @@ RUN CHROMEDRIVER_VERSION=$(google-chrome --version | sed "s/Google Chrome//" | x
     chmod +x /usr/bin/chromedriver && \
     rm chromedriver_linux64.zip && rm -r chromedriver-linux64
 
-RUN python3 -m pip install selenium urllib3 python-decouple requests bs4 pyvirtualdisplay
+COPY --from=ghcr.io/astral-sh/uv:0.7.2 /uv /uvx /bin/
+RUN uv venv /venv
+ENV PATH="/venv/bin:${PATH}"
+RUN uv pip install selenium urllib3 python-decouple requests bs4 pyvirtualdisplay
 
 # Copy challenge required files
 COPY config/php.ini $PHP_INI_DIR/php.ini
