@@ -23,7 +23,6 @@ Feel free to add more lines.
 endef
 export DESC
 export FLAG      = $(shell cat challenge/flag.txt)
-export FAKE_FLAG = $(shell cat dist/flag.txt)
 export TAG       = CTFd tag
 
 ############################
@@ -125,16 +124,14 @@ define run_check
 	cd solution/ ; \
 	echo -e	"\e[1;36m>>>>>>>>>>>>>> START $$(date +'%H:%M:%S')\e[0m"; \
 	exec 3>&1 ; \
-	O=$$(${RUNTIME} run --rm ${SRARGS} ${2} --name ${NAME}-solvescript${1} \
+	O=$$(docker run --rm ${SRARGS} ${2} --name ${NAME}-solvescript${1} \
 		${REGISTRY}/${NAME}-solvescript 3>&- | tee /dev/fd/3) ; \
 	RETVAL=$$? ; \
 	exec 3>&- ; \
 	echo -e	"\e[1;36m<<<<<<<<<<<<<< END $$(date +'%H:%M:%S')\e[0m"; \
 	printf "$$O" | grep ${FLAG} > /dev/null 2>&1 && \
 		echo -e "\033[1;32m[+] Real flag found: ${FLAG}\033[0;0m" || ( \
-	printf "$$O" | grep ${FAKE_FLAG} > /dev/null 2>&1 && \
-		echo -e "\033[1;32m[+] Fake flag found: ${FAKE_FLAG}\033[0;0m" \
-		|| ([[ "$$RETVAL" -eq "0" ]] && \
+		([[ "$$RETVAL" -eq "0" ]] && \
 		echo -e "\033[1;31m[!] Flag not found\033[0;0m"; exit 1))
 endef
 
