@@ -65,7 +65,7 @@ export RARGS ?= -p ${HOST}:${PORT}:1337 -e HOST=${HOST} -e PORT=${PORT} \
 export BARGS ?= --platform linux/amd64
 
 crun:
-	@echo -e "\e[1;34m[+] Running Challenge Container on ${HOST}:${PORT}\e[0m"
+	@echo -e "\e[1;36m[+] Running Challenge Container on ${HOST}:${PORT}\e[0m"
 	${RUNTIME} run --rm --name ${NAME} ${RARGS} ${IT} ${REGISTRY}/${NAME}
 	echo ${RUNTIME} run --rm --name ${NAME} ${RARGS} ${IT} ${REGISTRY}/${NAME}
 
@@ -136,9 +136,10 @@ SRARGS=-e HOST=${HOST} -e PORT=${PORT} -e TIMEOUT=${TIMEOUT} \
 			 -v ${MKPATH}/challenge/flag.txt:/flag.txt:z,ro \
 			 -v ${MKPATH}/dist/flag.txt:/app/flag-fake.txt:z,ro \
 			 -v ${MKPATH}/dist/flag.txt:/flag-fake.txt:z,ro \
+			 -v /tmp/lostemplates/uv:/root/.cache/uv:Z,rw \
 			 --platform linux/amd64
 # Docker Build Args
-SBARGS=--platform linux/amd64
+SBARGS=-v /tmp/lostemplates/uv:/root/.cache/uv:Z,rw --platform linux/amd64
 
 sbuild:
 	@echo -e "\e[1;34m[+] Building Solvescript Container\e[0m"
@@ -309,6 +310,9 @@ test-dist:
 SHELL := /usr/bin/env bash
 export RUNTIME ?= docker
 export RUNTIME_DIST ?= docker
+
+# Create cache directories
+_uv=$(shell mkdir -p /tmp/lostemplates/uv)
 
 define lint_assert_file_exists
 	@([ ! -f ${MKPATH}/${1} ] && \

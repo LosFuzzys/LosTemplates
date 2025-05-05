@@ -1,26 +1,26 @@
-# - Ubuntu 24.04.1 LTS
-# - pwntools v4.14.1 stable
-# - Python 3.12.3
-# - GLIBC 2.39-0ubuntu8.4
-FROM docker.io/pwntools/pwntools@sha256:1707bef16a3fb924d53231d899eeecaf18b5ebbb78e23c38d41dcd19d147bf6b
+# Ubuntu 24.04
+FROM docker.io/library/ubuntu@sha256:1e622c5f073b4f6bfad6632f2616c7f59ef256e96fe78bf6a595d1dc4376ac02
+COPY --from=ghcr.io/astral-sh/uv:0.7.2 /uv /uvx /bin/
 
 # Install apt dependencies if needed
-# USER root
 # RUN DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install -y ... && apt-get clean
-# USER pwntools
 
 WORKDIR /app
-COPY requirements.txt .
+COPY requirements*.txt pyproject.toml uv*.lock .*python-version .
 
-COPY --from=ghcr.io/astral-sh/uv:0.7.2 /uv /uvx /bin/
-RUN uv pip sync /app/requirements.txt
+# Install python dependencies
+ENV UV_COMPILE_BYTECODE=1
+ENV UV_CACHE_DIR=/root/.cache/uv/
+# If author uses requirements.txt, respect it and port it to uv (not recommended)
+RUN [ -s "requirements.txt" ] && (uv add --link-mode=copy -r requirements.txt && \
+  echo "\e[1;33m--> Consider porting requirements.txt to pyproject.toml with: uv add -r requirements.txt && rm requirements.txt\e[0m") \
+  || true
+# Install uv dependencies and respect the lockfile
+RUN uv sync --locked --compile-bytecode --link-mode=copy && uv tree --locked && uv python list --only-installed
 
-# Copy needed files to /app
+# Copy exploit(s) /app
 COPY exploit .
-USER root
 RUN chmod 755 /app/exploit
-USER pwntools
 
-ENV PWNLIB_NOTERM=1
-
-CMD /usr/bin/timeout -k 5 ${TIMEOUT} ./exploit REMOTE HOST=${HOST} PORT=${PORT}
+ENV PWNLIB_NOTERM=1 PYTHONUNBUFFERED=1 UV_COMPILE_BYTECODE=0 UV_OFFLINE=1 UV_LOCKED=1
+CMD /usr/bin/timeout -k 5 ${TIMEOUT} uv run ./exploit REMOTE HOST=${HOST} PORT=${PORT}
