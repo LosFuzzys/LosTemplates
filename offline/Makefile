@@ -217,12 +217,26 @@ define lint_assert_file_commited
 		echo "[OK  ] ${1} commited in git"
 endef
 
+define lint_assert_symlink
+	@(([ ! -L ${MKPATH}/${1} ] || [ ! -e ${MKPATH}/${1} ]) && \
+		echo -e "\e[0;41m[FAIL]\e[0;0m ${1} is not a valid symlink") || \
+		echo "[OK  ] ${1} is a valid symlink"
+endef
+
+define lint_assert_empty
+	@([ ! -s ${MKPATH}/${1} ] && \
+		echo -e "\e[0;41m[FAIL]\e[0;0m ${1} is empty") || \
+		echo "[OK  ] ${1} has content"
+endef
+
 lint:
 	@$(call lint_assert_file_exists,challenge/flag.txt)
 	@$(call lint_assert_file_exists,dist/flag.txt)
 	@$(call lint_assert_file_exists,${NAME}.tar.gz)
 	@$(call lint_assert_files_differ,dist/flag.txt,challenge/flag.txt)
 	@$(call lint_assert_file_commited,${NAME}.tar.gz)
+	@$(call lint_assert_symlink,deployment/.symlink-canary)
+	@$(call lint_assert_empty,solution/WRITEUP.md)
 
 clean:
 	${RM} ${NAME}.tar.gz dist/challenge dist/deploy.sh dist/sha256sum \
