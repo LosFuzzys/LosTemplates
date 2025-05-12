@@ -330,9 +330,9 @@ define lint_assert_file_commited
 endef
 
 define lint_assert_symlink
-	@([ ! -L ${MKPATH}/${1} ] && \
-		echo -e "\e[0;41m[FAIL]\e[0;0m ${1} is not a symlink") || \
-		echo "[OK  ] ${1} is a symlink"
+	@(([ ! -L ${MKPATH}/${1} ] || [ ! -e ${MKPATH}/${1} ]) && \
+		echo -e "\e[0;41m[FAIL]\e[0;0m ${1} is not a valid symlink") || \
+		echo "[OK  ] ${1} is a valid symlink"
 endef
 
 define lint_assert_empty
