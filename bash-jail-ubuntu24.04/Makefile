@@ -258,7 +258,7 @@ define test_solve_container
 	[ "$$F" == "1" ] && echo -e "\e[1;31mTimeout reached\e[0m" && exit 1 || true 
 	echo -e "[+] make solve" || true
 	@make solve >> $(TEST_LOG) 2>&1 && echo -e "\e[1;32m[+] Flag found\e[0m" || \
-		(echo -e "\e[1;33m[+] Flag not found\e[0m" && exit 1)
+		(echo -e "\e[1;33m[+] Flag not found\e[0m" && make kill && exit 1)
 endef
 
 define test_fail
