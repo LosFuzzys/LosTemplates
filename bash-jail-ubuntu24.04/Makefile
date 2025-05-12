@@ -347,7 +347,6 @@ version:
 shell:
 	@${RUNTIME} exec -it ${NAME} /bin/sh -c "command -v bash 2>&1 > /dev/null && bash || sh"
 
-
 # DO NOT TOUCH
 # Temporary hotfix (hopefully) for DESCBR. Sorry for this!
 define newline
