@@ -227,6 +227,9 @@ clean:
 version:
 	@echo -e "\e[1;34m[+] Template ${_TEMPLATE} version ${_VERSION}\e[0m"
 
+shell:
+	@echo -e "\e[1;34m[+] (shell) Not implemented in this template\e[0m"
+
 # DO NOT TOUCH
 # Temporary hotfix (hopefully) for DESCBR. Sorry for this!
 define newline

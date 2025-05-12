@@ -1,4 +1,4 @@
-.PHONY: all run build solve solve-sequential solve-parallel kill dist distrun clean deploy version lint test
+.PHONY: all run build solve solve-sequential solve-parallel kill dist distrun clean deploy version lint test shell
 
 # Targets
 all: build run
@@ -352,6 +352,9 @@ clean:
 
 version:
 	@echo -e "\e[1;34m[+] Template ${_TEMPLATE} version ${_VERSION}\e[0m"
+
+shell:
+	@${RUNTIME} exec -it ${NAME} /bin/sh -c "command -v bash 2>&1 > /dev/null && bash || sh"
 
 # DO NOT TOUCH
 # Temporary hotfix (hopefully) for DESCBR. Sorry for this!
