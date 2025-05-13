@@ -63,7 +63,7 @@ IT=$$([ -t 0 ] && echo "-it")
 
 # Docker Run Args
 export RARGS ?= \
-	-p ${HOST}:${PORT}:${PORT} -p ${HOST}:8080:8080 -e HOST=${HOST} -e PORT=${PORT} \
+	-p ${HOST}:${PORT}:1337 -p ${HOST}:8080:8080 -e HOST=${HOST} -e PORT=${PORT} \
 	-e PUBPORTSTART=${PUBPORTSTART} -e PUBPORTEND=${PUBPORTEND} -e NAME=${NAME} \
 	-e TIMEOUT=${TIMEOUT} -e DOMAIN=${DOMAIN} -e DOMAIN_PORT=${DOMAIN_PORT} \
 	-e DOMAIN_PROT=http -e REGISTRY=${REGISTRY} --privileged --platform linux/amd64
