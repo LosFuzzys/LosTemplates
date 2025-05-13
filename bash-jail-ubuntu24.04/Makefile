@@ -82,7 +82,7 @@ ckill:
 	@echo -e "\e[1;34m[+] Killing Challenge Container\e[0m"
 	${RUNTIME} ps --filter "name=${NAME}" --format "{{.ID}}" \
 		| tr '\n' ' ' \
-		| xargs ${RUNTIME} stop -t 0 \
+		| xargs -r ${RUNTIME} stop -t 0 \
 		|| true
 
 ##########################
@@ -184,7 +184,7 @@ skill:
 	@echo -e "\e[1;34m[+] Killing Solution Container/s\e[0m"
 	${RUNTIME} ps --filter "name=${NAME}-solvescript*" --format "{{.ID}}" \
 		| tr '\n' ' ' \
-		| xargs ${RUNTIME} stop -t 0 \
+		| xargs -r ${RUNTIME} stop -t 0 \
 		|| true
 
 ########################
