@@ -31,6 +31,7 @@ export TAG       = CTFd tag
 ############################
 
 export REGISTRY = localhost
+export PROTOCOL = http
 export HOST     = 127.0.0.1
 # Port for private deployments
 export PORT     = 1337
