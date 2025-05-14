@@ -130,6 +130,7 @@ distrun:
 # Docker Run Args
 SRARGS=-e HOST=${HOST} -e PORT=${PORT} -e TIMEOUT=${TIMEOUT} \
 			 --hostname localhost --net=host \
+			 -e BASKET_URL="${BASKET_URL}" -e BASKET_TOKEN="${BASKET_TOKEN}" \
 			 -v ${MKPATH}/challenge/flag.txt:/app/flag.txt:z,ro \
 			 -v ${MKPATH}/challenge/flag.txt:/flag.txt:z,ro \
 			 -v ${MKPATH}/dist/flag.txt:/app/flag-fake.txt:z,ro \
