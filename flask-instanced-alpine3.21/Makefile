@@ -71,7 +71,7 @@ export RARGS ?= \
 export BARGS ?= --platform linux/amd64
 
 crun:
-	@echo -e "\e[1;34m[+] Running Challenge Container on ${HOST}:${PORT}\e[0m"
+	@echo -e "\e[1;36m[+] Running Challenge Container on ${HOST}:${PORT}\e[0m"
 	${RUNTIME} run --rm --name ${NAME} ${RARGS} ${IT} ${REGISTRY}/${NAME}
 
 cbuild:

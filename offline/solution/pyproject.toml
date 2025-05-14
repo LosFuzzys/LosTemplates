@@ -1,0 +1,16 @@
+[project]
+name = "exploit" # No need to change this metadata
+version = "1.0.0"
+description = "Solvescript for the challenge"
+# Edit if needed:
+requires-python = ">=3.13"
+dependencies = [
+  "pwntools==4.14",
+]
+
+# You can add dependencies here with
+# $ uv add requests
+# or manually editing this file
+# 
+# Using requirements.txt is not recommended (but supported), as this method can
+# be hash locked (uv.lock)
