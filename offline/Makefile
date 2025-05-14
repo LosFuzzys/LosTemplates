@@ -1,4 +1,4 @@
-.PHONY: all run build solve solve-sequential solve-parallel kill dist distrun clean deploy version lint
+.PHONY: all run build solve solve-sequential solve-parallel kill dist distrun clean deploy version lint test
 
 # Targets
 all: build run
@@ -15,7 +15,7 @@ kill: ckill skill
 
 export FULLNAME  = CTFd challenge name
 export AUTHOR    = LosFuzzys
-export CATEGORY  = pwn
+export CATEGORY  = offline
 define DESC
 This is a multiline challenge description!
 
@@ -34,8 +34,6 @@ export HOST     = 127.0.0.1
 # Port for private deployments
 export PORT     = 1337
 export TIMEOUT  = 30
-# Port for public deployments
-# export PUBPORT  = 10000
 
 # Slugified challenge name. Default to directory name
 MKPATH:=$(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
@@ -52,15 +50,6 @@ export _TEMPLATE = offline
 ########################
 # Challenge Dockerfile #
 ########################
-
-#CACHEBUST=$(shell date +%s)
-
-# Docker Run Args
-#export RARGS ?= -p ${HOST}:${PORT}:1337 -t -i -e HOST=${HOST} -e PORT=${PORT} \
-#	-e TIMEOUT=${TIMEOUT} --read-only --privileged \
-#	--platform linux/amd64
-# Docker Build Args
-#export BARGS ?= --platform linux/amd64 --build-arg CACHEBUST=${CACHEBUST}
 
 crun:
 	@echo -e "\e[1;34m[+] (crun) Not implemented in this template\e[0m"
@@ -84,6 +73,11 @@ TAR_BSD_RENAME := $$(tar --version | grep -i bsd > /dev/null 2>&1 && \
 									echo "-s @^dist@${NAME}@")
 dist: build
 	@echo -e "\e[1;34m[+] Generating Distributed ${NAME}.tar.gz\e[0m"
+	envsubst < ./dist/deploy.sh.template | \
+		tee ./dist/deploy.sh >/dev/null
+	envsubst < ./dist/deploy.bat.template | \
+		tee ./dist/deploy.bat >/dev/null
+	chmod +x ./dist/deploy.sh
 	cd dist && find -L -type f,l -exec sha256sum '{}' \; | sed -e '/sha256sum/d' \
 		-e '/deploy.sh.template/d' -e '/deploy.bat.template/d' -e '/.gitignore/d' \
 		-e '/.dockerignore/d' | tee sha256sum
@@ -109,22 +103,22 @@ SRARGS=-e HOST=${HOST} -e PORT=${PORT} -e TIMEOUT=${TIMEOUT} \
 			 --hostname localhost --net=host \
 			 -v ${MKPATH}/challenge/flag.txt:/app/flag.txt:z,ro \
 			 -v ${MKPATH}/challenge/flag.txt:/flag.txt:z,ro \
+			 -v ${MKPATH}/dist/flag.txt:/app/flag-fake.txt:z,ro \
+			 -v ${MKPATH}/dist/flag.txt:/flag-fake.txt:z,ro \
 			 --platform linux/amd64
 # Docker Build Args
 SBARGS=--platform linux/amd64
 
 sbuild:
 	@echo -e "\e[1;34m[+] Building Solvescript Container\e[0m"
-	rm -f solution/encrypted.b64
-	cp challenge/encrypted.b64 solution/
 	cd solution/ ; \
-	docker build -t ${REGISTRY}/${NAME}-solvescript ${SBARGS} .
+	${RUNTIME} build -t ${REGISTRY}/${NAME}-solvescript ${SBARGS} .
 
 define run_check
 	cd solution/ ; \
 	echo -e	"\e[1;36m>>>>>>>>>>>>>> START $$(date +'%H:%M:%S')\e[0m"; \
 	exec 3>&1 ; \
-	O=$$(docker run --rm ${SRARGS} ${2} --name ${NAME}-solvescript${1} \
+	O=$$(${RUNTIME} run --rm ${SRARGS} ${2} --name ${NAME}-solvescript${1} \
 		${REGISTRY}/${NAME}-solvescript 3>&- | tee /dev/fd/3) ; \
 	RETVAL=$$? ; \
 	exec 3>&- ; \
@@ -155,9 +149,9 @@ srun-parallel:
 
 skill:
 	@echo -e "\e[1;34m[+] Killing Solution Container/s\e[0m"
-	docker ps --filter "name=${NAME}-solvescript*" --format "{{.ID}}" \
+	${RUNTIME} ps --filter "name=${NAME}-solvescript*" --format "{{.ID}}" \
 		| tr '\n' ' ' \
-		| xargs docker stop -t 0 \
+		| xargs -r ${RUNTIME} stop -t 0 \
 		|| true
 
 ########################
@@ -172,26 +166,37 @@ deploy-yml:
 	envsubst < ${MKPATH}/deployment/ctfd-entry.yml.template | \
 		tee ${MKPATH}/deployment/ctfd-${NAME}.yml >/dev/null
 
-# Deployments is prepared for quadlets (containers + systemd services)
-# https://www.redhat.com/sysadmin/quadlet-podman
-# - Assuming running user is the one that is operating this Makefile
-# - Remember to enable lingering for the user: loginctl enable-linger $USER
-# - Configure this user with the minimum privileges (not in sudoers)
-#
-# The service will automatically be enabled after reboot due to the [Install]
-# target in the quadlet/systemd service. So, reboot the machine or start it
-# once, and then it will always be running unless stopped.
+# Deployments for podman quadlets (systemd services)
 deploy-quadlet:
 	@echo -e "\e[1;34m[+] (deploy-quadlet) Not implemented in this template\e[0m"
 
+# Deployment for docker-compose
+deploy-docker:
+	@echo -e "\e[1;34m[+] (deploy-docker) Not implemented in this template\e[0m"
+
+# Deployment for registry
 deploy-registry: 
 	@echo -e "\e[1;34m[+] (deploy-registry) Not implemented in this template\e[0m"
+
+
+#############
+# Testsuite #
+#############
+
+test: test-main test-dist
+
+test-main:
+	@echo -e "\e[1;34m[+] (test-main) Not implemented in this template\e[0m"
+
+test-dist:
+	@echo -e "\e[1;34m[+] (test-dist) Not implemented in this template\e[0m"
 
 ###########
 # Generic #
 ###########
 
 SHELL := /usr/bin/env bash
+export RUNTIME ?= docker
 
 define lint_assert_file_exists
 	@([ ! -f ${MKPATH}/${1} ] && \
@@ -212,12 +217,26 @@ define lint_assert_file_commited
 		echo "[OK  ] ${1} commited in git"
 endef
 
+define lint_assert_symlink
+	@(([ ! -L ${MKPATH}/${1} ] || [ ! -e ${MKPATH}/${1} ]) && \
+		echo -e "\e[0;41m[FAIL]\e[0;0m ${1} is not a valid symlink") || \
+		echo "[OK  ] ${1} is a valid symlink"
+endef
+
+define lint_assert_empty
+	@([ ! -s ${MKPATH}/${1} ] && \
+		echo -e "\e[0;41m[FAIL]\e[0;0m ${1} is empty") || \
+		echo "[OK  ] ${1} has content"
+endef
+
 lint:
 	@$(call lint_assert_file_exists,challenge/flag.txt)
 	@$(call lint_assert_file_exists,dist/flag.txt)
 	@$(call lint_assert_file_exists,${NAME}.tar.gz)
 	@$(call lint_assert_files_differ,dist/flag.txt,challenge/flag.txt)
 	@$(call lint_assert_file_commited,${NAME}.tar.gz)
+	@$(call lint_assert_symlink,deployment/.symlink-canary)
+	@$(call lint_assert_empty,solution/WRITEUP.md)
 
 clean:
 	${RM} ${NAME}.tar.gz dist/challenge dist/deploy.sh dist/sha256sum \
@@ -226,6 +245,9 @@ clean:
 
 version:
 	@echo -e "\e[1;34m[+] Template ${_TEMPLATE} version ${_VERSION}\e[0m"
+
+shell:
+	@echo -e "\e[1;34m[+] (shell) Not implemented in this template\e[0m"
 
 # DO NOT TOUCH
 # Temporary hotfix (hopefully) for DESCBR. Sorry for this!

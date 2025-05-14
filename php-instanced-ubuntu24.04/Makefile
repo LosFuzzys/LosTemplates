@@ -1,4 +1,4 @@
-.PHONY: all run build solve solve-sequential solve-parallel kill dist distrun clean deploy version lint test
+.PHONY: all run build solve solve-sequential solve-parallel kill dist distrun clean deploy version lint test shell
 
 # Targets
 all: build run
@@ -31,6 +31,7 @@ export TAG       = CTFd tag
 ############################
 
 export REGISTRY = localhost
+export PROTOCOL = http
 export HOST     = 127.0.0.1
 # Port for private deployments
 export PORT     = 1337
@@ -63,7 +64,7 @@ IT=$$([ -t 0 ] && echo "-it")
 
 # Docker Run Args
 export RARGS ?= \
-	-p ${HOST}:${PORT}:${PORT} -p ${HOST}:8080:8080 -e HOST=${HOST} -e PORT=${PORT} \
+	-p ${HOST}:${PORT}:1337 -p ${HOST}:8080:8080 -e HOST=${HOST} -e PORT=${PORT} \
 	-e PUBPORTSTART=${PUBPORTSTART} -e PUBPORTEND=${PUBPORTEND} -e NAME=${NAME} \
 	-e TIMEOUT=${TIMEOUT} -e DOMAIN=${DOMAIN} -e DOMAIN_PORT=${DOMAIN_PORT} \
 	-e DOMAIN_PROT=http -e REGISTRY=${REGISTRY} --privileged --platform linux/amd64
@@ -91,7 +92,7 @@ ckill:
 	@echo -e "\e[1;34m[+] Killing Challenge Container\e[0m"
 	${RUNTIME} ps --filter "name=${NAME}" --format "{{.ID}}" \
 		| tr '\n' ' ' \
-		| xargs ${RUNTIME} stop -t 0 \
+		| xargs -r ${RUNTIME} stop -t 0 \
 		|| true
 
 ##########################
@@ -193,7 +194,7 @@ skill:
 	@echo -e "\e[1;34m[+] Killing Solution Container/s\e[0m"
 	${RUNTIME} ps --filter "name=${NAME}-solvescript*" --format "{{.ID}}" \
 		| tr '\n' ' ' \
-		| xargs ${RUNTIME} stop -t 0 \
+		| xargs -r ${RUNTIME} stop -t 0 \
 		|| true
 
 ########################
@@ -264,10 +265,11 @@ define test_solve_container
 		[ "`$1 ps --format 'UP' --filter "name=${NAME}"`" == "UP" ] && \
 		F='0' && break || sleep 1; \
 	done; \
-	[ "$$F" == "1" ] && echo -e "\e[1;31mTimeout reached\e[0m" && exit 1 || true 
+	[ "$$F" == "1" ] && (echo -e "\e[1;31mTimeout reached\e[0m" && make kill && \
+		exit 1) || true 
 	echo -e "[+] make solve" || true
 	@make solve >> $(TEST_LOG) 2>&1 && echo -e "\e[1;32m[+] Flag found\e[0m" || \
-		(echo -e "\e[1;33m[+] Flag not found\e[0m" && exit 1)
+		(echo -e "\e[1;33m[+] Flag not found\e[0m" && make kill && exit 1)
 endef
 
 define test_fail
@@ -338,12 +340,26 @@ define lint_assert_file_commited
 		echo "[OK  ] ${1} commited in git"
 endef
 
+define lint_assert_symlink
+	@(([ ! -L ${MKPATH}/${1} ] || [ ! -e ${MKPATH}/${1} ]) && \
+		echo -e "\e[0;41m[FAIL]\e[0;0m ${1} is not a valid symlink") || \
+		echo "[OK  ] ${1} is a valid symlink"
+endef
+
+define lint_assert_empty
+	@([ ! -s ${MKPATH}/${1} ] && \
+		echo -e "\e[0;41m[FAIL]\e[0;0m ${1} is empty") || \
+		echo "[OK  ] ${1} has content"
+endef
+
 lint:
 	@$(call lint_assert_file_exists,challenge/flag.txt)
 	@$(call lint_assert_file_exists,dist/flag.txt)
 	@$(call lint_assert_file_exists,${NAME}.tar.gz)
 	@$(call lint_assert_files_differ,dist/flag.txt,challenge/flag.txt)
 	@$(call lint_assert_file_commited,${NAME}.tar.gz)
+	@$(call lint_assert_symlink,deployment/.symlink-canary)
+	@$(call lint_assert_empty,solution/WRITEUP.md)
 
 clean:
 	${RM} ${NAME}.tar.gz dist/challenge dist/deploy.sh dist/sha256sum \
@@ -352,6 +368,9 @@ clean:
 
 version:
 	@echo -e "\e[1;34m[+] Template ${_TEMPLATE} version ${_VERSION}\e[0m"
+
+shell:
+	@${RUNTIME} exec -it ${NAME} /bin/sh -c "command -v bash 2>&1 > /dev/null && bash || sh"
 
 # DO NOT TOUCH
 # Temporary hotfix (hopefully) for DESCBR. Sorry for this!
