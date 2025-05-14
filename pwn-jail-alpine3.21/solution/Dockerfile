@@ -22,5 +22,8 @@ RUN uv sync --locked --compile-bytecode --link-mode=copy && uv tree --locked && 
 COPY exploit .
 RUN chmod 755 /app/exploit
 
+# Copy challenge relevant files
+COPY challenge .
+
 ENV PWNLIB_NOTERM=1 PYTHONUNBUFFERED=1 UV_COMPILE_BYTECODE=0 UV_OFFLINE=1 UV_LOCKED=1
 CMD /usr/bin/timeout --foreground -k 5 ${TIMEOUT} ./exploit REMOTE HOST=${HOST} PORT=${PORT}
