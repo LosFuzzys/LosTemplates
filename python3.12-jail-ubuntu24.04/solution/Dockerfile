@@ -6,7 +6,7 @@ COPY --from=ghcr.io/astral-sh/uv:0.7.2 /uv /uvx /bin/
 # RUN DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install -y ... && apt-get clean
 
 WORKDIR /app
-COPY requirements*.txt pyproject.toml uv*.lock .*python-version .
+COPY pyproject.toml requirements.txt* uv.lock* .python-version* ./
 
 # Install python dependencies
 ENV UV_COMPILE_BYTECODE=1
@@ -23,4 +23,4 @@ COPY exploit .
 RUN chmod 755 /app/exploit
 
 ENV PWNLIB_NOTERM=1 PYTHONUNBUFFERED=1 UV_COMPILE_BYTECODE=0 UV_OFFLINE=1 UV_LOCKED=1
-CMD /usr/bin/timeout -k 5 ${TIMEOUT} uv run ./exploit REMOTE HOST=${HOST} PORT=${PORT}
+CMD /usr/bin/timeout --foreground -k 5 ${TIMEOUT} ./exploit REMOTE HOST=${HOST} PORT=${PORT}
