@@ -23,4 +23,4 @@ COPY flag.txt /flag.txt
 COPY src/ /app
 RUN chmod +x /app/app.py
 
-CMD /app/entrypoint.sh
+CMD ["/app/entrypoint.sh"]

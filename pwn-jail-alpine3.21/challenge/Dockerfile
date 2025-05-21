@@ -15,7 +15,7 @@ RUN make -C /tmp/build/ challenge
 # if not, when docker has cached the compilation it wouldn't output
 # the binary to our dist/ directory so we can pack it for distribution
 ARG CACHEBUST=1
-CMD cp /tmp/build/challenge /dist/challenge
+CMD ["cp", "/tmp/build/challenge", "/dist/challenge"]
 
 ###############
 # Base system #

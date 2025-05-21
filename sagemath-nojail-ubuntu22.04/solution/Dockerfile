@@ -23,4 +23,4 @@ ENV TERM=linux
 
 WORKDIR /app
 
-CMD "/usr/bin/timeout ${TIMEOUT} ./exploit REMOTE HOST=${HOST} PORT=${PORT}"
+CMD ["/usr/bin/timeout ${TIMEOUT} ./exploit REMOTE HOST=${HOST} PORT=${PORT}"]
