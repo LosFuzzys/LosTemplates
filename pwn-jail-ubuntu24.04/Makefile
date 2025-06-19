@@ -359,7 +359,7 @@ version:
 	@echo -e "\e[1;34m[+] Template ${_TEMPLATE} version ${_VERSION}\e[0m"
 
 shell:
-	@${RUNTIME} exec -it ${NAME} /bin/sh -c "command -v bash 2>&1 > /dev/null && bash || sh"
+	@${RUNTIME} exec -it ${NAME} /bin/sh -c "chroot /jail bash || chroot /jail sh"
 
 # DO NOT TOUCH
 # Temporary hotfix (hopefully) for DESCBR. Sorry for this!
