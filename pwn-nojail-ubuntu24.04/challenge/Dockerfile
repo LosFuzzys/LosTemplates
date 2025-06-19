@@ -11,14 +11,19 @@ FROM docker.io/library/ubuntu@sha256:1e622c5f073b4f6bfad6632f2616c7f59ef256e96fe
 # Install apt dependencies if needed
 RUN DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install -y make gcc clang && apt-get clean 
 
+# NOTE: If you want to use a precompiled binary, uncomment
+# comment the build binary section and uncomment the use
+# precompiled binary section
+
+### Build Binary
 COPY . /tmp/build/
 RUN make -C /tmp/build/ challenge
-# Copy final binary to dist
-# CACHEBUST is a Docker trick to invalidate the cache at a exact point
-# if not, when docker has cached the compilation it wouldn't output
-# the binary to our dist/ directory so we can pack it for distribution
 ARG CACHEBUST=1
 CMD cp /tmp/build/challenge /dist/challenge
+
+### Use precompiled binary 
+# COPY ./challenge /tmp/build/challenge
+# COPY ./challenge /dist/challenge
 
 #################
 # Runner system #

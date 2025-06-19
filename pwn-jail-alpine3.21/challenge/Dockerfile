@@ -8,14 +8,19 @@ FROM docker.io/library/alpine@sha256:a8560b36e8b8210634f77d9f7f9efd7ffa463e380b7
 # Install apt dependencies if needed
 RUN apk update && apk add --no-cache gcc make musl-dev && rm -rf /var/cache/apk/*
 
+# NOTE: If you want to use a precompiled binary, uncomment
+# comment the build binary section and uncomment the use
+# precompiled binary section
+
+### Build Binary
 COPY . /tmp/build/
 RUN make -C /tmp/build/ challenge
-# Copy final binary to dist
-# CACHEBUST is a Docker trick to invalidate the cache at a exact point
-# if not, when docker has cached the compilation it wouldn't output
-# the binary to our dist/ directory so we can pack it for distribution
 ARG CACHEBUST=1
 CMD cp /tmp/build/challenge /dist/challenge
+
+### Use precompiled binary 
+# COPY ./challenge /tmp/build/challenge
+# COPY ./challenge /dist/challenge
 
 ###############
 # Base system #
