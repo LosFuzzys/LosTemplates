@@ -60,9 +60,10 @@ IT=$$([ -t 0 ] && echo "-it")
 # Docker Run Args
 export RARGS = -p ${HOST}:${PORT}:1337 -e HOST=${HOST} -e PORT=${PORT} \
 	-e TIMEOUT=${TIMEOUT} --read-only --privileged \
-	--platform linux/amd64
+	--platform linux/amd64 --pull=${PULL_POLICY_RUN}
 # Docker Build Args
-export BARGS = --platform linux/amd64 --build-arg CACHEBUST=${CACHEBUST}
+export BARGS = --platform linux/amd64 --build-arg CACHEBUST=${CACHEBUST} --pull=${PULL_POLICY_BUILD} 
+
 
 crun:
 	@echo -e "\e[1;36m[+] Running Challenge Container on ${HOST}:${PORT}\e[0m"
@@ -135,9 +136,9 @@ SRARGS=-e HOST=${HOST} -e PORT=${PORT} -e TIMEOUT=${TIMEOUT} \
 			 -v ${MKPATH}/challenge/flag.txt:/flag.txt:z,ro \
 			 -v ${MKPATH}/dist/flag.txt:/app/flag-fake.txt:z,ro \
 			 -v ${MKPATH}/dist/flag.txt:/flag-fake.txt:z,ro \
-			 --platform linux/amd64
+			 --platform linux/amd64 --pull=${PULL_POLICY_RUN} 
 # Docker Build Args
-SBARGS=--platform linux/amd64
+SBARGS=--platform linux/amd64 --pull=${PULL_POLICY_BUILD} 
 
 sbuild:
 	@echo -e "\e[1;34m[+] Building Solvescript Container\e[0m"
@@ -310,6 +311,11 @@ test-dist:
 SHELL := /usr/bin/env bash
 export RUNTIME ?= docker
 export RUNTIME_DIST ?= docker
+# PULL_POLICY_RUN options: always, missing, never
+export PULL_POLICY_RUN = never
+# PULL_POLICY_BUILD options in docker: true, false
+# PULL_POLICY_BUILD options in podman: true, false, always, missing, never
+export PULL_POLICY_BUILD = true 
 
 define lint_assert_file_exists
 	@([ ! -f ${MKPATH}/${1} ] && \
