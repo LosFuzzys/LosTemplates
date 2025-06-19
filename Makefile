@@ -1,5 +1,7 @@
 .PHONY: versions patch test
 
+SHELL := /bin/bash
+
 NAME_LENGTH:=30
 VERSION_LENGTH:=7
 
