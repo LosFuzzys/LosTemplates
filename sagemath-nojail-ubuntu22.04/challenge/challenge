@@ -2,10 +2,15 @@
 # -*- coding: utf-8 -*-
 # Respect the shebang and mark file as executable
 
+from sage.all import *
 import os
 
 def main():
+    L = [Integer(3), Permutation([Integer(5),Integer(1),Integer(4),Integer(2),Integer(3)]), Integer(17), Integer(17), Integer(3), Integer(51)]
+
     print(f"Hello {os.environ['SOCAT_PEERADDR']}:{os.environ['SOCAT_PEERPORT']}")
+
+    print(f"Let me give you some integers coming directly sagemath: {L}")
 
     number = input("Give me input: ")
     print(f"Your input was {number}")
