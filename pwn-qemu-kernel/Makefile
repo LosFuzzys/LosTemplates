@@ -201,6 +201,7 @@ DESCBR=$(subst $(newline),<br />,${DESC})
 export DESCBR
 deploy-yml:
 	@echo -e "\e[1;34m[+] Generating CTFd challenge yml\e[0m"
+	COND_TAG=$$([ -n "${TAG}" ] && echo -e "tags:\n  - \"${TAG}\"") \
 	envsubst < ${MKPATH}/deployment/ctfd-entry.yml.template | \
 		tee ${MKPATH}/deployment/ctfd-${NAME}.yml >/dev/null
 
