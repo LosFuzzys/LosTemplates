@@ -79,7 +79,7 @@ cbuild:
 	@echo -e "\e[1;34m[+] Building Challenge Container\e[0m"
 	${RUNTIME} build -t ${REGISTRY}/${NAME}-challenge ${BARGS} \
 		--build-arg CACHEBUST=${CACHEBUST} ${MKPATH}/challenge/
-	rm -f challenge/challenge.tar
+	${RM} ${MKPATH}/helper/challenge.tar
 	${RUNTIME} save --output helper/challenge.tar ${REGISTRY}/${NAME}-challenge
 	#${RUNTIME} build -t ${REGISTRY}/${NAME}-build --target builder ${BARGS} .
 	#${RUNTIME} run  -v ${MKPATH}/dist:/dist:z ${REGISTRY}/${NAME}-build
