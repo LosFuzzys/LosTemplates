@@ -60,8 +60,7 @@ IT=$$([ -t 0 ] && echo "-it")
 
 # Docker Run Args
 export RARGS ?= -p ${HOST}:${PORT}:1337 -e HOST=${HOST} -e PORT=${PORT} \
-	--user 1337:1337 --security-opt=no-new-privileges:true \
-	--platform linux/amd64
+	--user 1337:1337 --platform linux/amd64
 # Docker Build Args
 export BARGS ?= --platform linux/amd64
 

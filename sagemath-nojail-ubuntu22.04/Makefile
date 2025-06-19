@@ -60,7 +60,7 @@ IT=$$([ -t 0 ] && echo "-it")
 # Docker Run Args
 export RARGS ?= -p ${HOST}:${PORT}:1337 -e HOST=${HOST} -e PORT=${PORT} \
 	-e TIMEOUT=${TIMEOUT} --user 1000:1000 --read-only --tmpfs /tmp \
-	--security-opt=no-new-privileges:true --platform linux/amd64
+	--platform linux/amd64
 # Docker Build Args
 export BARGS ?= --platform linux/amd64
 
