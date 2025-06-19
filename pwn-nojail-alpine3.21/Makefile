@@ -24,7 +24,7 @@ endef
 export DESC
 export FLAG      = $(shell cat challenge/flag.txt)
 export FAKE_FLAG = $(shell cat dist/flag.txt)
-export TAG       = CTFd tag
+export TAG       = 
 
 ############################
 # Deployment Configuration #

@@ -23,7 +23,7 @@ Feel free to add more lines.
 endef
 export DESC
 export FLAG      = $(shell cat challenge/flag.txt)
-export TAG       = CTFd tag
+export TAG       = 
 
 ############################
 # Deployment Configuration #
