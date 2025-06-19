@@ -68,4 +68,6 @@ RUN cd /tmp/ \
     && rm -rf /tmp/contracts
 
 ENTRYPOINT ["tini", "-g", "--"]
+
+SHELL ["/bin/sh", "-c"]
 CMD ["/entrypoint.sh"]

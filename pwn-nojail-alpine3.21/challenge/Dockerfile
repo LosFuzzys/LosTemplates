@@ -16,6 +16,7 @@ RUN apk update && apk add --no-cache gcc make musl-dev && rm -rf /var/cache/apk/
 COPY . /tmp/build/
 RUN make -C /tmp/build/ challenge
 ARG CACHEBUST=1
+SHELL ["/bin/sh", "-c"]
 CMD cp /tmp/build/challenge /dist/challenge
 
 ### Use precompiled binary 
@@ -37,4 +38,5 @@ RUN chmod +x /app/challenge
 COPY flag.txt /flag.txt
 COPY entrypoint.sh /app/entrypoint.sh
 
+SHELL ["/bin/sh", "-c"]
 CMD socat -T 60 TCP-LISTEN:1337,fork,nodelay,reuseaddr,pktinfo EXEC:"/usr/bin/timeout -k 5 ${TIMEOUT} /app/entrypoint.sh"

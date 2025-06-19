@@ -37,4 +37,5 @@ ENV PWNLIB_NOTERM=1
 ENV DOT_SAGE=/tmp/
 
 # Quoting is required in this template
+SHELL ["/bin/sh", "-c"]
 CMD "socat -T 60 TCP-LISTEN:1337,fork,nodelay,reuseaddr,pktinfo EXEC:\"/usr/bin/timeout -k 5 ${TIMEOUT} /app/entrypoint.sh\""

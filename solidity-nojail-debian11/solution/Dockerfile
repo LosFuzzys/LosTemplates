@@ -26,5 +26,6 @@ COPY foundry.toml .
 COPY solve_challenge.py .
 COPY sources/ sources/
 
+SHELL ["/bin/sh", "-c"]
 CMD /usr/bin/timeout -k 5 ${TIMEOUT} python solve_challenge.py \
     --host ${HOST} --port ${PORT} --ticket ${TICKET} ${VERBOSE}

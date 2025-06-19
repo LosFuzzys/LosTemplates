@@ -18,6 +18,7 @@ RUN make -C /tmp/build/ challenge
 # if not, when docker has cached the compilation it wouldn't output
 # the binary to our dist/ directory so we can pack it for distribution
 ARG CACHEBUST=1
+SHELL ["/bin/sh", "-c"]
 CMD cp /tmp/build/challenge /dist/challenge
 
 #################
@@ -35,4 +36,5 @@ RUN chmod +x /app/challenge
 COPY flag.txt /flag.txt
 COPY entrypoint.sh /app/entrypoint.sh
 
+SHELL ["/bin/sh", "-c"]
 CMD socat -T 60 TCP-LISTEN:1337,fork,nodelay,reuseaddr,pktinfo EXEC:"/usr/bin/timeout -k 5 ${TIMEOUT} /app/entrypoint.sh"

@@ -36,4 +36,5 @@ RUN chmod +x /app/entrypoint.sh
 
 USER 1000
 
+SHELL ["/bin/sh", "-c"]
 CMD /app/entrypoint.sh 

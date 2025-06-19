@@ -37,4 +37,5 @@ RUN chmod +x /app/bootstrap.sh
 
 USER 1000
 
+SHELL ["/bin/sh", "-c"]
 CMD /app/bootstrap.sh 

@@ -36,4 +36,6 @@ COPY flag.txt /flag.txt
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 RUN touch /tmp/paths && chmod 777 /tmp/paths
+
+SHELL ["/bin/sh", "-c"]
 CMD ["/entrypoint.sh"]

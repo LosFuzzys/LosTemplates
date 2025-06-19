@@ -23,4 +23,5 @@ COPY flag.txt /flag.txt
 COPY src/ /app
 RUN chmod +x /app/app.py
 
+SHELL ["/bin/sh", "-c"]
 CMD /app/entrypoint.sh

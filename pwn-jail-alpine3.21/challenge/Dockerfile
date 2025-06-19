@@ -16,6 +16,7 @@ RUN apk update && apk add --no-cache gcc make musl-dev && rm -rf /var/cache/apk/
 COPY . /tmp/build/
 RUN make -C /tmp/build/ challenge
 ARG CACHEBUST=1
+SHELL ["/bin/sh", "-c"]
 CMD cp /tmp/build/challenge /dist/challenge
 
 ### Use precompiled binary 
@@ -53,6 +54,8 @@ COPY entrypoint.sh /jail/app/entrypoint.sh
 # remember that /DESTPATH cannot contain any files coming from /jail (as its a mount). If you want 
 # pre-created/copied files in /DESTPATH you should manually copy them in entrypoint.sh
 # Note: /DESTPATH should not contain /jail as a prefix
+
+SHELL ["/bin/sh", "-c"]
 CMD nsjail \
     --mode l \
     --disable_proc \
