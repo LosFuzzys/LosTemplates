@@ -1,10 +1,24 @@
 # LosTemplates - CTF Challenge Templates
 
-Challenge templates for CTFs as you go! Sane defaults, simplified complexity,
-minimal dependencies, easily hackable and deployable everywhere.
+Preconfigured CTF challenge templates with sane defaults and an homogeneous
+interface. Instanced flask, instanced qemu+ssh, jailed pwn, sagemath, solidity,
+and much more.
 
-Add this repository as a submodule to your CTF repository or manually download
-and copy the folders.
+No heavy dependencies, no precompiled binaries. Just coreutils,
+containers, shells and makefiles. Easily auditable, verifiable and extendable,
+both for authors and players.
+
+Automatically handle deployments with registry (kubernetes), compose (docker)
+or systemd services (quadlets). Generate distribution files, local player
+deployments, and CTFd metadata yaml files automatically with no extra effort.
+
+Harmonized interface for all challenges. Run make to launch, make solve to
+solve, along with other targets: `dist`,`test`,`lint`,`deploy`,`shell`,`kill`,
+.... All configurable via arguments such as `make PORT=8080`, `make solve
+HOST=chall.losfuzzys.net`, and much more `RUNTIME`,`TIMEOUT`,.... Different
+deployments? `source .env`. Keep it simple.
+
+Powered by [LosFuzzys](https://losfuzzys.net).
 
 ## Versions
 
@@ -79,7 +93,7 @@ nix develop
 
 For Linux: `docker`, `tar` and a linux shell.
 
-For Windows: `docker` with WSL2 backend.
+For Windows: `docker` (WSL2 backend) and `tar`.
 
 ## Usage
 
@@ -91,6 +105,8 @@ importants being:
 * solve
 * dist
 * distrun
+* lint
+* test
 
 Other targets might be helpful too:
 
@@ -100,7 +116,9 @@ Other targets might be helpful too:
 * solve-parallel
 * kill
 * clean
+* deploy
 * version
+* shell
 
 You can customize the templates for every challenge as long as:
 
@@ -201,11 +219,34 @@ as a player would do.
 Use it in combination with `make solve` to ensure the distributed tarfile is
 deployable and solvable.
 
+### lint
+
+Sanity checks the challenge using predefined rules. 
+
+### test
+
+Tests the regular and distributed challenge using `make solve`. The workflow is:
+1. `make all`: Spawning the challenge
+2. `make solve`: Solves the challenge 
+3. `make distrun`: Spawns the distributed challenge 
+4. `make solve`: Solves the distributed challenge
+
+If the regular and distributed challenge are solvable, `make test` succeeds,
+otherwise it will return with a non-zero value.
+
 ### version
 
 Prints the type of the makefile in use and the current version-number.
 
 Check for the latest version in [version](#version).
+
+### shell
+
+Spawns an interactive shell for a running challenge. For jailed challenges
+we will `chroot` you into `/jail`. 
+
+> [!NOTE]
+> This target requires an running challenge e.g. `make run`.
 
 ### solve-sequential
 
