@@ -141,7 +141,7 @@ distrun:
 #########################
 
 # Docker Run Args
-SRARGS=-e HOST=${HOST} -e PORT=${PORT} -e DOMAIN=${DOMAIN} -e TIMEOUT=${TIMEOUT} \
+SRARGS=-e PROTOCOL=${PROTOCOL} -e HOST=${HOST} -e PORT=${PORT} -e DOMAIN=${DOMAIN} -e TIMEOUT=${TIMEOUT} \
 			 --hostname localhost --net=host \
 			 -v ${MKPATH}/challenge/flag.txt:/app/flag.txt:z,ro \
 			 -v ${MKPATH}/challenge/flag.txt:/flag.txt:z,ro \
