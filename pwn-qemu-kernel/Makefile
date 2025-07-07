@@ -24,7 +24,7 @@ endef
 export DESC
 export FLAG      = $(shell cat challenge/flag.txt)
 export FAKE_FLAG = $(shell cat dist/flag.txt)
-export TAG       = 
+export TAGS      = 									# Array of tags for CTFd: i.e. ["AAA", "BBB", "CCC DDD"]
 
 ############################
 # Deployment Configuration #
@@ -202,7 +202,11 @@ DESCBR=$(subst $(newline),<br />,${DESC})
 export DESCBR
 deploy-yml:
 	@echo -e "\e[1;34m[+] Generating CTFd challenge yml\e[0m"
-	COND_TAG=$$([ -n "${TAG}" ] && echo -e "tags:\n  - \"${TAG}\"") \
+	COND_TAG=$$( \
+		if [ -n "$${TAGS}" ]; then \
+			echo "$${TAGS}" | jq -r '"tags:\n" + (map("  - \"" + . + "\"") | join("\n"))'; \
+		fi \
+	) \
 	envsubst < ${MKPATH}/deployment/ctfd-entry.yml.template | \
 		tee ${MKPATH}/deployment/ctfd-${NAME}.yml >/dev/null
 

@@ -1,8 +1,8 @@
 name: "${FULLNAME}"
 author: "${AUTHOR}"
 category: "${CATEGORY}"
-
-description: "${DESCBR}<br><br>Author: ${AUTHOR}"
+attribution: "Author: ${AUTHOR}"
+description: "${DESCBR}"
 
 type: "dynamic"
 value: 500
