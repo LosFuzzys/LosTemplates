@@ -208,10 +208,6 @@ Change the flag format in `challenge/flag.txt`, `dist/flag.txt` and
 `solution/exploit`. You can write a sed script that does it, in case you want
 to pull changes from upstream.
 
-**Downstream patches:**
-
-You can keep the kk
-
 ## Contributing
 
 We welcome every contribution to the project. You can check for issues and open
