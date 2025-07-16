@@ -1,5 +1,7 @@
 # Challenge Template Solidity
 
+THIS CHALLENGE IS CURRENTLY WORK IN PROGRESS AND IS NOT READY FOR PRODUCTION
+
 ## Things to change as a challenge autor
 The following things have to be adepted by the challenge autor:
 
