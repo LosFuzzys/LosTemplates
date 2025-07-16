@@ -33,25 +33,25 @@ with `make version`.
 | :----------------------------- | :-----: |
 | bash-jail-ubuntu24.04          | 1.0.0   |
 | bash-nojail-ubuntu24.04        | 1.0.0   |
-| flask-instanced-alpine3.19     | 1.0.0   |
-| flask-nojail-alpine3.19        | 1.0.0   |
+| flask-instanced-alpine3.21     | 1.0.0   |
+| flask-nojail-alpine3.21        | 1.0.0   |
 | offline                        | 1.0.0   |
 | php-instanced-ubuntu24.04      | 1.0.0   |
 | php-nojail-ubuntu24.04         | 1.0.0   |
 | phpxss-nojail-ubuntu24.04      | 1.0.0   |
-| pwn-jail-alpine3.19            | 1.0.0   |
+| pwn-jail-alpine3.21            | 1.0.0   |
 | pwn-jail-ubuntu24.04           | 1.0.0   |
-| pwn-nojail-alpine3.19          | 1.0.0   |
+| pwn-nojail-alpine3.21          | 1.0.0   |
 | pwn-nojail-ubuntu24.04         | 1.0.0   |
 | pwn-qemu-kernel                | 1.0.0   |
-| python3.11-jail-alpine3.19     | 1.0.0   |
-| python3.11-nojail-alpine3.19   | 1.0.0   |
+| python3.12-jail-alpine3.21     | 1.0.0   |
 | python3.12-jail-ubuntu24.04    | 1.0.0   |
+| python3.12-nojail-alpine3.21   | 1.0.0   |
 | python3.12-nojail-ubuntu24.04  | 1.0.0   |
-| rust-nojail-alpine3.19         | 1.0.0   |
+| rust-nojail-alpine3.21         | 1.0.0   |
 | rust-nojail-ubuntu24.04        | 1.0.0   |
 | sagemath-nojail-ubuntu22.04    | 1.0.0   |
-| solidity-nojail-debian11       | 1.0.0   |
+| solidity-nojail-debian11       | 0.0.1   |
 
 You can check for the latest versions within a script [here](https://raw.githubusercontent.com/LosFuzzys/LosTemplates/refs/heads/main/.versions)
 
