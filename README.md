@@ -19,7 +19,8 @@ Different deployments? `source .env-release`. Keep it simple.
 
 Multiple alternatives, fast actions. Kubernetes cluster down? Cloud rate
 limits? Quickly ssh into a VPS and run `make deploy-docker`. Problems? Run
-`make HOST=0.0.0.0`. Your infrastructure team will have an easier time.
+`make HOST=0.0.0.0`. Your infrastructure team will have an easier time fixing
+Kubernetes.
 
 Powered by [LosFuzzys](https://losfuzzys.net).
 
@@ -177,17 +178,18 @@ $ make RUNTIME='sudo docker'
 
 **Modifying the Makefile:**
 
-Authors or organizers can edit this `Makefile` in order to add required
-functionality for their CTF, in this case we recommend changing the version
-label with `-GLACIERCTF`. This way you can compare against it in your automated
-testing scripts, it in case it requires non-standard handling.
+Authors and organizers can edit the top level `Makefile` from a challenge in
+order to add required functionality for their CTF. In this case, we recommend
+changing the version label as `-GLACIERCTF25`. This way you can compare against
+it in automated testing scripts, in case it requires non-standard handling due
+to changes made to the `Makefile`.
 
 **Buffering for pwn:**
 
-We don't recommend disabling the buffering at the entrypoint for C programs, it
-usually `LD_PRELOAD`s the binary and causes unexpected allocations, possibly
-breaking locally developed heap exploits. Always disable it in the program
-`main` or init function with `man 3 setvbuf`.
+We don't recommend disabling the buffering at the `entrypoint.sh` for C
+programs, it usually `LD_PRELOAD`s the binary and causes unexpected
+allocations, likely breaking locally developed heap exploits. Always disable it
+in the program `main` or init function with `man 3 setvbuf`.
 
 **Creating a writeable path:**
 
@@ -205,15 +207,15 @@ For jailed apps you can create a writeable path with `nsjail`, see
 
 **Default deployment:**
 
-Adjust the default deployment target to the inteded one. You can also change it
-to deploy to a testing instance and place authentication credentials in
-`deployment/` (in case team is trusted).
+Adjust the default deployment target to the inteded one for release. You can
+also change it to deploy to a testing instance and place authentication
+credentials in `deployment/` (in case team is trusted).
 
 **Flag:**
 
 Change the flag format in `challenge/flag.txt`, `dist/flag.txt` and
 `solution/exploit`. You can write a sed script that does it, in case you want
-to pull changes from upstream.
+to pull changes from upstream frequently.
 
 ## Contributing
 
