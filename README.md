@@ -52,6 +52,8 @@ with `make version`.
 | sagemath-nojail-ubuntu22.04    | 1.0.0   |
 | solidity-nojail-debian11       | 1.0.0   |
 
+You can check for the latest versions within a script [here](https://raw.githubusercontent.com/LosFuzzys/LosTemplates/refs/heads/main/.versions)
+
 ## Dependencies
 
 ### Challenge Author
