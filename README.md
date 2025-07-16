@@ -14,8 +14,12 @@ deployments, and CTFd metadata yaml files automatically with no extra effort.
 
 Harmonized interface for all challenges. Run `make` to run, `make solve` to
 solve, and other targets: `dist`,`test`,`lint`,`deploy`, etc. Configurable via
-arguments as `make PORT=8080`, `make solve HOST=chall.losfuzzys.net`, and more.
+arguments: `make PORT=8080`, `make solve HOST=chall.losfuzzys.net`, and more.
 Different deployments? `source .env-release`. Keep it simple.
+
+Multiple alternatives, fast actions. Kubernetes cluster down? Cloud rate
+limits? Quickly ssh into a VPS and run `make deploy-docker`. Problems? Run
+`make HOST=0.0.0.0`. Your infrastructure team will have an easier time.
 
 Powered by [LosFuzzys](https://losfuzzys.net).
 
@@ -97,7 +101,8 @@ For Windows: `docker` (WSL2 backend) and `tar` support.
 
 All the template logic is implemented in the `Makefile` at the root of every
 template folder. This `Makefile` holds metadata configuration that authors can
-change.
+change. The name of the challenge will be the name of the folder holding the
+`Makefile` (by default).
 
 Files in `challenge/` hold the main challenge logic. `challenge/flag.txt`
 contains the flag. `challenge/Dockerfile` runs the challenge container and
@@ -214,11 +219,6 @@ We welcome every contribution to the project. You can check for issues and open
 a PR. Feel free to implement new features, but we recommend opening an issue
 for discussion before implementing it :)
 
-## Security
-
-Found a missconfiguration/vulnerability in the templates and want to report it
-privately? Send an email to `team@losfuzzys.net`
-
 ## FAQ
 
 **Why not an nsjail config:**
@@ -229,3 +229,8 @@ don't care about them. You need to change something about the "runtime" system?
 Must be in `challenge/Dockerfile`! You need to change the entrypoint? Must be
 `challenge/entrypoint.sh`! This makes it easier for authors that don't know
 what `nsjail` is.
+
+## Security
+
+Found a missconfiguration/vulnerability in the templates and want to report it
+privately? Send an email to `team@losfuzzys.net`
