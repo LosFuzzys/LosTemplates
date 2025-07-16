@@ -236,5 +236,5 @@ what `nsjail` is.
 
 ## Security
 
-Found a missconfiguration/vulnerability in the templates and want to report it
+Found a misconfiguration/vulnerability in the templates and want to report it
 privately? Send an email to `team@losfuzzys.net`
