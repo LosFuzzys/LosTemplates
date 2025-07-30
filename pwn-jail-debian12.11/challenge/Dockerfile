@@ -1,12 +1,12 @@
-# Ubuntu 24.04
-# GCC 13.3.0
-# Clang 18.1.3
-# GLIBC 2.39
+# Debian Bookworm 12.11 (30.07.2025)
+# GCC 12.2.0 (Debian 12.2.0-14+deb12u1)
+# Clang 14.0.6 (Debian)
+# GLIBC 2.36 (Debian GLIBC 2.36-9+deb12u10)
 
 ##################
 # Builder system #
 ##################
-FROM docker.io/library/ubuntu@sha256:1e622c5f073b4f6bfad6632f2616c7f59ef256e96fe78bf6a595d1dc4376ac02 AS builder
+FROM docker.io/library/debian:stable@sha256:de77ae1b03425c79cd5c829687b3db9f1c62e25af09b34aed09f684043f0285a AS builder
 
 # Install apt dependencies if needed
 RUN DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install -y make gcc clang && apt-get clean 
@@ -29,10 +29,10 @@ CMD cp /tmp/build/challenge /dist/challenge
 ###############
 # Base system #
 ###############
-FROM docker.io/library/ubuntu@sha256:1e622c5f073b4f6bfad6632f2616c7f59ef256e96fe78bf6a595d1dc4376ac02 AS base
+FROM docker.io/library/debian:stable@sha256:de77ae1b03425c79cd5c829687b3db9f1c62e25af09b34aed09f684043f0285a AS base
 
 # Install apt dependencies if needed
-RUN DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install -y coreutils && apt-get clean 
+RUN DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install -y coreutils && apt-get clean
 
 #################
 # Runner system #
