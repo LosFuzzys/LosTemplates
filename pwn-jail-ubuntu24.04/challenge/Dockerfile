@@ -38,7 +38,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install -y coreutil
 # Runner system #
 #################
 # Opensuse Tumbleweed (only for running nsjail)
-FROM docker.io/opensuse/tumbleweed@sha256:f4df2009eaccba59437997c2545ba2d6fc731dcda892aa57aec6dc101d7a1f9f
+FROM docker.io/opensuse/tumbleweed@sha256:404df0954fda18f5d823ed520a41ff6e60d7ab00b2ef688477b679c2ff742560 
 
 # Install apk dependencies if needed
 RUN zypper -n install nsjail && zypper -n clean --all
