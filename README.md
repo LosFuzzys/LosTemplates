@@ -91,7 +91,7 @@ yay docker-rootless-extras
 **Nix**:
 
 ```sh
-nix develop
+nix-shell .
 ```
 
 ### Players
