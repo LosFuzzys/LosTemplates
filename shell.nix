@@ -9,6 +9,7 @@ pkgs.mkShell {
     gnutar
     parallel
     envsubst
+    git
   ];
   shellHook = ''
     RED='\033[0;31m'
