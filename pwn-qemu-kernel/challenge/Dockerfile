@@ -1,7 +1,8 @@
 # Ubuntu 24.04
-# GCC 13.3.0
-# Clang 18.1.3
-# GLIBC 2.39
+# GCC 13.2.0 (13.2.0-7ubuntu1)
+# Clang 18.1.3 (1:18.0-59~exp2)
+# GLIBC 2.39 (GLIBC 2.39-0ubuntu8.6)
+
 
 ##################
 # Builder system #
@@ -14,7 +15,14 @@
 #################
 # Runner system #
 #################
-FROM docker.io/library/ubuntu@sha256:1e622c5f073b4f6bfad6632f2616c7f59ef256e96fe78bf6a595d1dc4376ac02 as base
+FROM docker.io/library/ubuntu:noble-20251013 AS base
+
+ADD --chmod=0755 \
+    --checksum=sha256:c125df9762b0c7233459087bb840c0e5dbfc4d9690ee227f1ed8994f4d51d2e0 \
+    https://raw.githubusercontent.com/reproducible-containers/repro-sources-list.sh/v0.1.4/repro-sources-list.sh \
+    /usr/local/bin/repro-sources-list.sh
+
+RUN repro-sources-list.sh
 
 # Install apt dependencies if needed
 RUN DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install -y socat bash ruby libguestfs-tools openssh-client qemu-system-x86 && apt-get clean 

@@ -1,12 +1,19 @@
-# Debian Bookworm 12.11 (30.07.2025)
+# Debian Bookworm 12.12 (08.12.2025)
 # GCC 12.2.0 (Debian 12.2.0-14+deb12u1)
 # Clang 14.0.6 (Debian)
-# GLIBC 2.36 (Debian GLIBC 2.36-9+deb12u10)
+# GLIBC 2.36 (Debian GLIBC 2.36-9+deb12u13)
 
 ##################
 # Builder system #
 ##################
-FROM docker.io/library/debian:stable@sha256:de77ae1b03425c79cd5c829687b3db9f1c62e25af09b34aed09f684043f0285a AS builder
+FROM docker.io/library/debian:bookworm-20251208-slim AS builder
+
+ADD --chmod=0755 \
+    --checksum=sha256:c125df9762b0c7233459087bb840c0e5dbfc4d9690ee227f1ed8994f4d51d2e0 \
+    https://raw.githubusercontent.com/reproducible-containers/repro-sources-list.sh/v0.1.4/repro-sources-list.sh \
+    /usr/local/bin/repro-sources-list.sh
+
+RUN repro-sources-list.sh
 
 # Install apt dependencies if needed
 RUN DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install -y make gcc clang && apt-get clean 
@@ -29,7 +36,14 @@ CMD cp /tmp/build/challenge /dist/challenge
 ###############
 # Base system #
 ###############
-FROM docker.io/library/debian:stable@sha256:de77ae1b03425c79cd5c829687b3db9f1c62e25af09b34aed09f684043f0285a AS base
+FROM docker.io/library/debian:bookworm-20251208-slim AS base
+
+ADD --chmod=0755 \
+    --checksum=sha256:c125df9762b0c7233459087bb840c0e5dbfc4d9690ee227f1ed8994f4d51d2e0 \
+    https://raw.githubusercontent.com/reproducible-containers/repro-sources-list.sh/v0.1.4/repro-sources-list.sh \
+    /usr/local/bin/repro-sources-list.sh
+
+RUN repro-sources-list.sh
 
 # Install apt dependencies if needed
 RUN DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install -y coreutils && apt-get clean

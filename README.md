@@ -31,26 +31,26 @@ with `make version`.
 
 | Name                           | Version |
 | :----------------------------- | :-----: |
-| bash-jail-ubuntu24.04          | 1.0.1   |
-| bash-nojail-ubuntu24.04        | 1.0.1   |
+| bash-jail-ubuntu24.04          | 1.1.1   |
+| bash-nojail-ubuntu24.04        | 1.1.1   |
 | flask-instanced-alpine3.21     | 1.0.1   |
 | flask-nojail-alpine3.21        | 1.0.1   |
 | offline                        | 1.0.1   |
-| php-instanced-ubuntu24.04      | 1.0.1   |
-| php-nojail-ubuntu24.04         | 1.0.1   |
-| phpxss-nojail-ubuntu24.04      | 1.0.1   |
+| php-instanced-ubuntu24.04      | 1.1.1   |
+| php-nojail-ubuntu24.04         | 1.1.1   |
+| phpxss-nojail-ubuntu24.04      | 1.1.1   |
 | pwn-jail-alpine3.21            | 1.0.1   |
-| pwn-jail-debian12.11           | 1.0.1   |
-| pwn-jail-ubuntu24.04           | 1.0.1   |
+| pwn-jail-debian12              | 1.1.2   |
+| pwn-jail-ubuntu24.04           | 1.1.1   |
 | pwn-nojail-alpine3.21          | 1.0.1   |
-| pwn-nojail-ubuntu24.04         | 1.0.1   |
+| pwn-nojail-ubuntu24.04         | 1.1.1   |
 | pwn-qemu-kernel                | 1.0.1   |
 | python3.12-jail-alpine3.21     | 1.0.1   |
-| python3.12-jail-ubuntu24.04    | 1.0.1   |
+| python3.12-jail-ubuntu24.04    | 1.1.1   |
 | python3.12-nojail-alpine3.21   | 1.0.1   |
-| python3.12-nojail-ubuntu24.04  | 1.0.1   |
+| python3.12-nojail-ubuntu24.04  | 1.1.1   |
 | rust-nojail-alpine3.21         | 1.0.1   |
-| rust-nojail-ubuntu24.04        | 1.0.1   |
+| rust-nojail-ubuntu24.04        | 1.1.1   |
 | sagemath-nojail-ubuntu22.04    | 1.0.1   |
 | solidity-nojail-debian11       | 0.0.1   |
 

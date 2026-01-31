@@ -1,5 +1,12 @@
 # Debian Bookworm 12.11 (30.07.2025)
-FROM docker.io/library/debian:stable@sha256:de77ae1b03425c79cd5c829687b3db9f1c62e25af09b34aed09f684043f0285a
+FROM docker.io/library/debian:bookworm-20251208-slim
+
+ADD --chmod=0755 \
+    --checksum=sha256:c125df9762b0c7233459087bb840c0e5dbfc4d9690ee227f1ed8994f4d51d2e0 \
+    https://raw.githubusercontent.com/reproducible-containers/repro-sources-list.sh/v0.1.4/repro-sources-list.sh \
+    /usr/local/bin/repro-sources-list.sh
+
+RUN repro-sources-list.sh
 COPY --from=ghcr.io/astral-sh/uv:0.7.2 /uv /uvx /bin/
 
 # Install apt dependencies if needed
