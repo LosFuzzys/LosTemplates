@@ -123,7 +123,7 @@ define run_check
 	RETVAL=$$? ; \
 	exec 3>&- ; \
 	echo -e	"\e[1;36m<<<<<<<<<<<<<< END $$(date +'%H:%M:%S')\e[0m"; \
-	printf "$$O" | grep -F -q -- "${FLAG}" > /dev/null 2>&1 && \
+	printf '%s' "$$O" | grep -F -q -- "${FLAG}" > /dev/null 2>&1 && \
 		echo -e "\033[1;32m[+] Real flag found: ${FLAG}\033[0;0m" || ( \
 		([[ "$$RETVAL" -eq "0" ]] && \
 		echo -e "\033[1;31m[!] Flag not found\033[0;0m"; exit 1))
