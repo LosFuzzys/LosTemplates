@@ -132,7 +132,7 @@ endef
 srun:
 	@echo -e "\e[1;34m[+] Running Solvescript Container against" \
 		"${HOST}:${PORT}\e[0m"
-	@$(call run_check,,-it)
+	@$(call run_check,,${IT})
 
 TIMES=10
 srun-sequential:
