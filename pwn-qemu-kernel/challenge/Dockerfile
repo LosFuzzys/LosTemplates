@@ -14,10 +14,10 @@
 #################
 # Runner system #
 #################
-FROM docker.io/library/ubuntu@sha256:1e622c5f073b4f6bfad6632f2616c7f59ef256e96fe78bf6a595d1dc4376ac02 as base
+FROM docker.io/library/fedora@sha256:6cd815d862109208adf6040ea13391fe6aeb87a9dc80735c2ab07083fdf5e03a as base
 
 # Install apt dependencies if needed
-RUN DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install -y socat bash ruby libguestfs-tools openssh-client qemu-system-x86 && apt-get clean 
+RUN dnf update -y && dnf install -y socat bash ruby libguestfs-tools openssh-clients qemu-system-x86 && dnf clean -y all
 
 # Copy kernel images & modules
 COPY buildroot/rootfs.qcow2 /app/
