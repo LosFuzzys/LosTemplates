@@ -11,11 +11,11 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install -y socat co
 #################
 # Runner system #
 #################
-# Opensuse Tumbleweed (only for running nsjail)
-FROM docker.io/opensuse/tumbleweed@sha256:404df0954fda18f5d823ed520a41ff6e60d7ab00b2ef688477b679c2ff742560 
+# pinned to alpine 3.23.5, with nsjail 3.6, fakeroot 1.37.2
+FROM docker.io/library/alpine@sha256:fd791d74b68913cbb027c6546007b3f0d3bc45125f797758156952bc2d6daf40
 
 # Install apk dependencies if needed
-RUN zypper -n install nsjail fakeroot && zypper -n clean --all
+RUN apk update && apk add nsjail fakeroot && apk cache clean
 
 # Copy base filesystem
 COPY --from=base / /jail
