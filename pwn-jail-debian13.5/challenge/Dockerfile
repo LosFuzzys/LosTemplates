@@ -37,16 +37,11 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install -y coreutil
 #################
 # Runner system #
 #################
-# Opensuse Tumbleweed (only for running nsjail)
-FROM docker.io/opensuse/tumbleweed@sha256:a029741b691d98438bd078f6e819812b0665d1be773966951488827a85ab956e
+# pinned to alpine 3.23.5, with nsjail 3.6, fakeroot 1.37.2
+FROM docker.io/library/alpine@sha256:fd791d74b68913cbb027c6546007b3f0d3bc45125f797758156952bc2d6daf40
 
 # Install apk dependencies if needed
-RUN zypper -n install -y git make autoconf libtool flex bison pkg-config gcc-c++ protobuf-devel libnl3-devel && \
-    git clone --depth 1 --branch 3.6 --recurse-submodules https://github.com/google/nsjail /tmp/nsjail && \
-    make -C /tmp/nsjail -j"$(nproc)" && \
-    install -m0755 /tmp/nsjail/nsjail /usr/bin/nsjail && \
-    rm -rf /tmp/nsjail && \
-    zypper -n clean --all
+RUN apk update && apk add nsjail fakeroot && apk cache clean
 
 # Copy base filesystem
 COPY --from=base / /jail
